@@ -1,29 +1,27 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import globals from 'globals';
+import pluginReact from 'eslint-plugin-react';
+import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // 1. 기본 자바스크립트 권장 설정 적용
+  js.configs.recommended,
+  // 2. 리액트 권장 설정 적용
+  pluginReact.configs.flat.recommended,
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
-    },
+    files: ['**/*.{js,mjs,cjs,jsx}'],
+    plugins: { js },
+    extends: ['airbnb-base', 'prettier'],
+    languageOptions: { globals: globals.browser },
+
+    //아래가 팀 규칙에 해당하는 부분.
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // ESLint 연결하고 나오는 에러들 막는 규칙. = Vite/React +17 환경에서 필요 없는 규칙 끄기
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-uses-react': 'off',
+      'react/jsx-no-target-blank': 'off',
+
+      // 팀원 상의 후 추가 규칙 넣기
     },
   },
-])
+]);

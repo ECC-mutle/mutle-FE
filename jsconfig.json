@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    // 1. Emotion의 css 프롭 타입을 인식하게 합니다.
+    "jsxImportSource": "@emotion/react",
+    // 2. VS Code가 Emotion의 타입을 참조하도록 경로를 명시합니다.
+    "types": ["@emotion/react/types/css-prop"],
+    "baseUrl": "src"
+  },
+  "include": ["src"]
+
+  // 블로그에는 Typescript 기준으로만 코드가 적혀 있고 구글링을 해도 Typescript만 나와서 제미나이한테 Javascript용으로 만들어 달라고 했습니다.
+}
