@@ -2,6 +2,9 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
+import Button from './components/ui/Button';
+import Input from './components/form/Input';
+
 // 1. Emotion 임포트
 import styled from '@emotion/styled';
 
@@ -31,6 +34,7 @@ function App() {
       </div>
 
       {/* 3. Emotion css 프롭 테스트 영역 */}
+
       <div
         css={{
           color: 'blue',
@@ -52,6 +56,7 @@ function App() {
         <br />
 
         {/* 4. Styled 컴포넌트 사용 테스트 */}
+
         <StyledButton onClick={() => alert('Emotion 작동 확인!')}>
           Emotion 핑크 버튼
         </StyledButton>
