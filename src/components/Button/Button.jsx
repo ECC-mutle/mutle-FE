@@ -17,8 +17,8 @@ const Button = ({
     <BaseButton
       type={type}
       onClick={onClick} // 전달받은 함수 연결
-      variant={varient}
-      sixe={size}
+      variant={variant}
+      size={size}
       disabled={disabled} // 비활성화 여부를 적용
     >
       {children}

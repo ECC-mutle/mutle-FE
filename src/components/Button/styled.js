@@ -60,35 +60,44 @@ const variantStyles = {
 /* size 스타일 정의 */
 const sizeStyles = {
   sm: {
-    padding: '10px 10px',
-    fontSize: '13px',
+    padding: '5px 10px',
+    fontSize: '8px',
+    borderRadius: '40px',
   },
   md: {
-    padding: '10px 10px',
-    fontSize: '15px',
+    padding: '5px 20px',
+    fontSize: '10px',
+    borderRadius: '50px',
   },
   lg: {
-    padding: '10px 10px',
-    fontSize: '18px',
+    padding: '8px 20px',
+    fontSize: '13px',
+    borderRadius: '50px',
+  },
+  Hsize: {
+    padding: '5px 8px',
+    fontSize: '8px',
+    borderRadius: '10px',
   },
 };
 
 export const BaseButton = styled.button(
   ({ variant = 'primary', size = 'md', disabled, liked = false }) => {
-    const v = variantStyles[variant];
-    const s = sizeStyles[size];
+    const v = variantStyles[variant] ?? variantStyles.primary;
+    const s = sizeStyles[size] ?? sizeStyles.md;
 
     return {
       /* 1. 기본 공통 스타일 (.btn) */
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '8px',
-      borderRadius: '1px',
+      gap: '3px',
       fontWeight: 600,
+      borderRadius: s.borderRadius,
       cursor: disabled ? 'not-allowed' : 'pointer',
-      border: `1px solid ${v.border ?? 'transparent'}`,
+      border: `0.8px solid ${v.border ?? 'transparent'}`,
       outline: 'none',
+      alignItems: 'center',
       transition: 'all 0.2s ease',
 
       /* 2. size */
