@@ -1,5 +1,5 @@
 import React from 'react';
-import './Input.css';
+import { InputGroup, InputLabel, InputField, ErrorText } from './styled';
 
 const Input = ({
   label, // 입력창 위에 붙는 제목
@@ -13,25 +13,21 @@ const Input = ({
 }) => {
   const inputId = id || `input-${label}`;
   return (
-    <div className='input-group'>
-      {label && (
-        <label className='input-label' htmlFor={inputId}>
-          {label}
-        </label>
-      )}
+    <InputGroup>
+      {label && <InputLabel htmlFor={inputId}>{label}</InputLabel>}
 
-      <input
+      <InputField
         id={inputId}
         type={type}
-        className={`input-field ${error ? 'input-error' : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        isError={!!error}
         {...props}
       />
 
-      {error && <span className='error-text'>{error}</span>}
-    </div>
+      {error && <ErrorText>{error}</ErrorText>}
+    </InputGroup>
   );
 };
 

@@ -2,11 +2,10 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import Button from './components/ui/Button';
-import Input from './components/form/Input';
-
-// 1. Emotion 임포트
 import styled from '@emotion/styled';
+import Button from './components/Button';
+import Input from './components/Input';
+import Header from './components/Header';
 
 // 2. Styled 컴포넌트 정의
 const StyledButton = styled.button`
