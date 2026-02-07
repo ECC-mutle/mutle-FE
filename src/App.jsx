@@ -11,12 +11,20 @@ import React from 'react';
 import Login from './pages/Login/Login';
 
 const Background = styled.div`
-  width: 100vw; /* 뷰포트 전체 너비 */
-  height: 100vh; /* 뷰포트 전체 높이 */
-  background-color: #f5f5f5; /* 원하는 배경색 */
+  width: 100vw;
+  height: 100vh;
+  background-color: #f5f5f5;
+
+  /* 중앙 정렬을 위한 핵심 코드 */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column; /* 헤더와 로그인박스를 위아래로 배치 */
+  justify-content: center; /* 세로 중앙 */
+  align-items: center; /* 가로 중앙 */
+
+  /* 혹시 모를 외부 여백 제거 */
+  position: fixed;
+  top: 0;
+  left: 0;
 `;
 
 function App() {
