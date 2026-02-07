@@ -67,3 +67,19 @@ export const withdraw = async (password, token) => {
     throw error;
   }
 };
+
+export const updatePassword = async (currentPassword, newPassword, token) => {
+  const response = await axios.put(
+    `/api/auth/me/password`,
+    {
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return response.data;
+};
