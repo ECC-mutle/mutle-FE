@@ -6,7 +6,6 @@
     // 1. Emotion의 css 프롭 타입을 인식하게 합니다.
     "jsxImportSource": "@emotion/react",
     // 2. VS Code가 Emotion의 타입을 참조하도록 경로를 명시합니다.
-    "types": ["@emotion/react/types/css-prop"],
     "baseUrl": "src"
   },
   "include": ["src"]
