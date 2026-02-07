@@ -1,5 +1,5 @@
 import React from 'react';
-import './Button.css'; // css 파일에 적은 내용 불러옴.
+import { BaseButton } from './styled';
 
 // 1. Props(속성) 설정: 버튼이 가질 수 있는 옵션들 정의
 const Button = ({
@@ -12,17 +12,17 @@ const Button = ({
 }) => {
   // 2. 클래스 네임 조합: 옵션에 따라 다른 CSS 클래스 적용
   // ex : variant가 'danger'라면 클래스명은 "btn btn-danger"가 됨.
-  const className = `btn btn-${variant} btn-${size}`;
 
   return (
-    <button
+    <BaseButton
       type={type}
-      className={className} // 완성된 클래스명을 입힘
       onClick={onClick} // 전달받은 함수 연결
+      variant={variant}
+      size={size}
       disabled={disabled} // 비활성화 여부를 적용
     >
       {children}
-    </button>
+    </BaseButton>
   );
 };
 
