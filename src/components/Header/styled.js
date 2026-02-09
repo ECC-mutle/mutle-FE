@@ -2,9 +2,6 @@ import styled from '@emotion/styled';
 
 /*Header 전체 영역*/
 export const HeaderWrapper = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   z-index: 1000;
 
