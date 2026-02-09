@@ -5,7 +5,7 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resole: {
+  resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
@@ -16,7 +16,7 @@ export default defineConfig({
         target: 'https://mutle-be.onrender.com',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        //rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },
