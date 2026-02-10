@@ -10,6 +10,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Island from './pages/Island';
 import Friends from './pages/Friends';
 import Me from './pages/Me';
+import SearchMusicPage from './pages/SearchMusic';
+import LoginPage from './pages/Login';
 
 const Background = styled.div`
   width: 100vw;
@@ -44,6 +46,8 @@ function App() {
           <Route path='/island' element={<Island />} />
           <Route path='/friends' element={<Friends />} />
           <Route path='/me' element={<Me />} />
+          <Route path='/search-music' element={<SearchMusicPage />} />
+          <Route path='/login' element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
     </Background>
