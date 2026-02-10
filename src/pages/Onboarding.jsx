@@ -5,8 +5,11 @@ import Button from '../components/Button/Button';
 //import Header from '../components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
-const OnboardingPage = () => {
+export default function OnboardingPage() {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -19,11 +22,11 @@ const OnboardingPage = () => {
         textAlign: 'center',
       }}
     >
-      <h1 style={{ fontsize: '2.5rem', marginBottom: '20px' }}>Mutle</h1>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Mutle</h1>
       <div
         style={{
           display: 'flex',
-          flexDirection: 'colum',
+          flexDirection: 'column',
           gap: '10px',
           alignItems: 'center',
         }}
@@ -34,18 +37,23 @@ const OnboardingPage = () => {
         <Button variant='primary' size='md'>
           카카오톡으로 로그인
         </Button>
-        <Button variant='primary' size='md'>
+        <Button variant='primary' size='md' onClick={() => navigate('/login')}>
           로그인하기
         </Button>
       </div>
       <p style={{ marginBottom: '40px', color: '#000000' }}>
         아직 계정이 없으신가요?{' '}
-        <Link to='/signup' style={{ marginBottom: '40px', color: '#000000' }}>
+        <Link
+          to='/signup'
+          style={{
+            marginBottom: '40px',
+            color: '#000000',
+            textDecoration: 'underline',
+          }}
+        >
           회원가입
         </Link>
       </p>
     </div>
   );
-};
-
-export default OnboardingPage;
+}

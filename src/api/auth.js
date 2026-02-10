@@ -10,8 +10,10 @@ export const Signup = async (userData) => {
       nickname: userData.nickname,
       password: userData.password,
       email: userData.email,
-      profileImage: userData.profileImage,
+      profileImage: userData.profileImage || '',
     });
+
+    console.log('서버 응답 데이터:', response.data);
     return response.data; //여기에 결과가 담김.
   } catch (error) {
     console.error('회원가입 실패:', error);
@@ -22,7 +24,7 @@ export const Signup = async (userData) => {
 //로그인
 export const Login = async (userId, password) => {
   try {
-    const response = await axios.post(`/api/auth/login`, {
+    const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
       userId: userId,
       password: password,
     });
@@ -140,7 +142,7 @@ export const UpdateMyInfo = async (updateData, token) => {
 //아이디 중복 확인
 export const CheckIdDuplicate = async (userId) => {
   try {
-    const response = await axios.get('/api/auth/check-user-id', {
+    const response = await axios.get(`${API_BASE_URL}/api/auth/check-user-id`, {
       params: {
         userId: userId,
       },
@@ -155,7 +157,38 @@ export const CheckIdDuplicate = async (userId) => {
 //이메일 중복 확인
 export const CheckEmailDuplicate = async (email) => {
   try {
-    const response = await axios.get('/api/auth/check-email', {
+    const response = await axios.get(`${API_BASE_URL}/api/auth/check-email`, {
+      params: {
+        email: email,
+      },
+    });
+    return response.data.isDuplicate;
+  } catch (error) {
+    console.error('이메일 중복 확인 중 오류 발생', error);
+    throw error;
+  }
+};
+
+//카카오 가입/로그인
+export const KakaoLogin = async (code) => {
+  try {
+    const response = await axios.post(
+      `https://mutle-be.onrender.com/api/auth/kakao`,
+      {
+        code: code,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('카카오 API 통신 에러', error);
+    throw error;
+  }
+};
+
+//구글 가입/로그인
+export const GoogleLogin = async (email) => {
+  try {
+    const response = await axios.post('/api/auth/google', {
       params: {
         email: email,
       },

@@ -6,6 +6,8 @@ import Header from '../../components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BottleImg from '../../assets/images/유리병_png.png';
+import { Link } from 'react-router-dom';
+import { GetBottle, ReactBottle } from '../../api/bottles';
 
 const BottleImage = styled.img`
   width: 150px;
@@ -121,7 +123,7 @@ const styles = {
   },
 };
 
-const RandomPage = () => {
+export default function RandomPage() {
   // viewMode: 'list' (유리병 화면), 'detail' (메시지 화면)
   const [viewMode, setViewMode] = useState('list');
 
@@ -185,7 +187,6 @@ const RandomPage = () => {
       </main>
     </div>
   );
-};
-export default RandomPage;
+}
 
 //일단 state로 설정해둠. api 호출할 때 홈 화면이랑 연결해야함! (not state...)

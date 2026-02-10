@@ -1,12 +1,13 @@
 // src/pages/Bottles/Bottles.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Header from '../../components/Header/Header';
-import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import BottleImg from '../../assets/images/유리병_png.png';
+import { GettodayQuest, SendBottle } from '../../api/bottles';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -56,8 +57,103 @@ const TextArea = styled.textarea`
   resize: none;
 `;
 
-const BottlesPage = () => {
+const SelectedMusicCard = styled.div`
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 15px;
+  border: 1px solid #add8e6;
+  margin: 10px 0;
+  text-align: left;
+  cursor: pointer;
+`;
+
+const SelectedAlbumArt = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  margin-right: 15px;
+`;
+
+const SelectedMusicInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export default function BottlesPage() {
   const [step, setStep] = useState(1);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [selectedMusic, setSelectedMusic] = useState(null);
+  // 데이터 상태 관리
+  const [question, setQuestion] = useState('질문을 불러오는 중...');
+  const [music, setMusic] = useState('');
+  const [memo, setMemo] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // 1. 오늘의 질문 가져오기
+  useEffect(() => {
+    if (location.state && location.state.selectedMusic) {
+      const musicData = location.state.selectedMusic;
+      setSelectedMusic(musicData); // 전체 객체를 저장해야 앨범 아트, 가수가 보입니다.
+      setMusic(musicData.trackName); // API 전송용 제목 저장
+      setStep(2); // 바로 작성 단계로 이동
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        const storedToken = localStorage.getItem('token');
+        console.log('전송할 토큰:', storedToken); // 1. 토큰이 제대로 찍히는지 확인
+
+        if (!storedToken) {
+          setQuestion('로그인 정보가 없습니다.');
+          return;
+        }
+
+        const res = await GettodayQuest(storedToken);
+        console.log('서버 전체 응답:', res); // 2. 여기서 데이터 구조 확인
+
+        // 서버 응답 구조가 res.data 내부에 있을 경우
+        if (res && res.data && res.data.questionText) {
+          setQuestion(res.data.questionText);
+        }
+        // 만약 res 자체가 데이터일 경우를 대비
+        else if (res && res.questionText) {
+          setQuestion(res.questionText);
+        } else {
+          setQuestion('오늘의 질문을 찾을 수 없습니다.');
+        }
+      } catch (error) {
+        console.error('에러 디테일:', error.response); // 3. 401 에러 원인 출력
+        setQuestion('질문을 불러오는 중에 오류가 발생했습니다.');
+      }
+    };
+    fetchQuestion();
+  }, []);
+
+  // 2. 유리병 전송 함수
+  const handleSend = async (isPublic) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token'); // 로컬 스토리지 등에 저장된 토큰 사용
+      const bottleData = {
+        question: question,
+        music: music,
+        content: memo,
+        isPublic: isPublic, // '보내기'는 true, '나만 보기'는 false
+      };
+
+      await SendBottle(token, bottleData);
+      setStep(isPublic ? 3 : 4); // 성공 시 해당 스텝으로 이동
+    } catch (error) {
+      alert('전송에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container>
@@ -73,18 +169,60 @@ const BottlesPage = () => {
             </h2>
             <div onClick={() => setStep(2)} style={{ cursor: 'pointer' }}>
               <BottleImage src={BottleImg} alt='유리병' />
-              <p style={{ marginTop: '10px', color: '#888' }}>클릭하여 작성</p>
             </div>
+            <p style={{ marginTop: '10px', color: '#888' }}>
+              유리병 클릭하여 작성
+            </p>
           </>
         )}
 
         {step === 2 && (
           <>
             <h2 style={{ fontSize: '1.2rem', marginBottom: '20px' }}>
-              오늘의 유리병 작성하기
+              오늘의 유리병 보내기
             </h2>
-            <InputField placeholder='Q. 겨울에 가장 듣고 싶은 노래는?' />
-            <TextArea placeholder='클릭하여 메모 입력' />
+            <p style={{ marginBottom: '20px', fontWeight: 'bold' }}>
+              {question}
+            </p>
+            {selectedMusic ? (
+              <SelectedMusicCard onClick={() => navigate('/search-music')}>
+                <SelectedAlbumArt
+                  src={selectedMusic.artworkUrl60}
+                  alt='album'
+                />
+                <SelectedMusicInfo>
+                  <strong style={{ fontSize: '0.9rem' }}>
+                    {selectedMusic.trackName}
+                  </strong>
+                  <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                    {selectedMusic.artistName}
+                  </span>
+                </SelectedMusicInfo>
+              </SelectedMusicCard>
+            ) : (
+              <div
+                onClick={() => navigate('/search-music')}
+                style={{
+                  width: '100%',
+                  padding: '15px',
+                  margin: '10px 0',
+                  borderRadius: '15px',
+                  border: '1px solid #ccc',
+                  backgroundColor: 'white',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  color: '#aaa',
+                  boxSizing: 'border-box',
+                }}
+              >
+                클릭하여 음악 선택
+              </div>
+            )}
+            <TextArea
+              placeholder='클릭하여 메모 입력'
+              value={memo}
+              onChange={(e) => setMemo(e.target.value)}
+            />
             <div
               style={{
                 marginTop: '20px',
@@ -94,16 +232,18 @@ const BottlesPage = () => {
               }}
             >
               <button
-                onClick={() => setStep(3)}
+                onClick={() => handleSend(true)}
+                disabled={loading}
                 style={{
                   padding: '10px 20px',
                   backgroundColor: '#A2D2FF',
                   border: 'none',
                   borderRadius: '20px',
                   color: 'white',
+                  cursor: 'pointer',
                 }}
               >
-                보내기
+                {loading ? '전송 중...' : '보내기'}
               </button>
               <button
                 onClick={() => setStep(4)}
@@ -134,7 +274,7 @@ const BottlesPage = () => {
               유리병을 성공적으로 전송했어요!
             </div>
             <button
-              onClick={() => setStep(1)}
+              onClick={() => setStep(1)} //이 부분을 Random으로 설정해두어야 함.
               style={{
                 backgroundColor: '#A2D2FF',
                 color: 'white',
@@ -180,7 +320,7 @@ const BottlesPage = () => {
       {step === 1 && (
         <p style={{ marginTop: '30px' }}>
           <Link
-            to='/signup'
+            to='/Me'
             style={{
               color: '#555',
               textDecoration: 'none',
@@ -193,8 +333,6 @@ const BottlesPage = () => {
       )}
     </Container>
   );
-};
-
-export default BottlesPage;
+}
 
 //화면은 띄워놨는데 연결은 다 안됨. 보내기 성공이라고 뜨는 건 버튼 형식임. 보내는 건 따로 연결해야함 API

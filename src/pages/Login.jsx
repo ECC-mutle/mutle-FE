@@ -1,31 +1,34 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input/Input';
 import Button from '../components/Button/Button';
 import Header from '../components/Header/Header';
 import styled from '@emotion/styled';
+import { Login } from '../api/auth';
 
-const LoginPage = () => {
+export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1); //1일때는 이메일 입력창, 2일때는 비밀번호 입력창
-  const [email, setEmail] = useState('');
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
-  // 이메일 입력 후 다음으로
   const handleNext = () => {
-    if (email.includes('@')) {
-      setStep(2);
-    } else {
-      alert('올바른 이메일 주소를 입력하세요');
-    }
+    if (!userId) return alert('아이디를 입력해주세요.');
+    setStep(2);
   };
 
-  // 로그인 시도 (API 역할)
-  const handleLogin = () => {
-    // 임시 로직: 이메일이 'test@test.com'이고 비번이 '1234'면 성공이라고 가정
-    if (email === 'test@test.com' && password === '1234') {
-      setStep(3); // 성공 -> 로그인_3
-    } else {
-      setStep(4); // 실패 -> 로그인_4 (오류 화면)
+  const handleLogin = async () => {
+    try {
+      const result = await Login(userId, password);
+      if (result) {
+        localStorage.setItem('token', result.data.accessToken);
+        setStep(3);
+      }
+    } catch (error) {
+      console.error(error);
+      setStep(4); // 실패 화면으로 이동
     }
   };
 
@@ -45,11 +48,12 @@ const LoginPage = () => {
 
       {step === 1 && (
         <>
-          <p>가입한 이메일 주소를 입력해주세요</p>
+          <p>가입한 아이디를 입력해주세요</p>
           <Input
-            type='email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type='text'
+            value={userId}
+            placeholder='아이디 입력'
+            onChange={(e) => setUserId(e.target.value)}
           />
           <Button onClick={handleNext}>다음</Button>
         </>
@@ -85,22 +89,30 @@ const LoginPage = () => {
 
       {step === 3 && (
         <>
-          {/* 로그인_3  */}
-          <Button onClick={() => alert('가입 완료!')}>
+          <p
+            style={{
+              fontSize: '1.2rem',
+              marginBottom: '20px',
+              color: '#4A90E2',
+              fontWeight: 'bold',
+            }}
+          >
             로그인이 완료되었습니다!
-          </Button>
+          </p>
+          <Button onClick={() => navigate('/bottles/bottles')}>시작하기</Button>
         </>
       )}
       {step === 4 && (
         <>
           {/* 로그인_4 화면 구성 (실패 안내) */}
-          <Button onClick={() => setStep(2)}>
-            로그인에 실패했습니다. 다시 시도해주세요
-          </Button>
+          <>
+            <p style={{ color: 'red', marginBottom: '20px' }}>
+              로그인 정보가 일치하지 않습니다.
+            </p>
+            <Button onClick={() => setStep(1)}>다시 시도하기</Button>
+          </>
         </>
       )}
     </div>
   );
-};
-
-export default LoginPage;
+}
