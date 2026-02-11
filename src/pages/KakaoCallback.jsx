@@ -29,15 +29,15 @@ const KakaoCallback = () => {
 
           // 알림창을 띄우기 전에 이미 저장되었는지 확인
           alert(`반갑습니다! 로그인에 성공했습니다.`);
-          navigate('/', { replace: true });
+          navigate('/bottles/bottles', { replace: true });
         }
       }
     } catch (error) {
-      // 이미 성공해서 토큰이 있는 상태라면 에러 알림을 무시합니다.
+      // 이미 성공해서 토큰이 있는 상태라면 에러 알림을 무시
       if (!localStorage.getItem('accessToken')) {
         console.error('로그인 에러:', error);
         alert('로그인 처리 중 오류가 발생했습니다.');
-        navigate('/login');
+        navigate('/');
       }
     }
   };
