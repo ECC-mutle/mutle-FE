@@ -14,6 +14,8 @@ import LoginPage from './pages/Login';
 import RandomPage from './pages/Bottles/Random';
 import BottlesPage from './pages/Bottles/Bottles';
 import KakaoCallback from './pages/KakaoCallback';
+import GoogleCallback from './pages/GoogleCallBack';
+
 import SearchMusicPage from './pages/SearchMusic';
 
 const Background = styled.div`
@@ -47,7 +49,8 @@ function App() {
       <Routes>
         <Route path='/' element={<OnboardingPage />} />
         <Route path='/login' element={<LoginPage />} />
-        <Route path='/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/kakao-callback' element={<KakaoCallback />} />
+        <Route path='/google-callback' element={<GoogleCallback />} />
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/bottles/bottles' element={<BottlesPage />} />
         <Route path='/search-music' element={<SearchMusicPage />} />

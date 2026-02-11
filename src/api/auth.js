@@ -1,11 +1,15 @@
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: '',
+});
+
 const API_BASE_URL = 'https://mutle-be.onrender.com';
 
 //회원가입 (수정 완)
 export const Signup = async (userData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, {
+    const response = await axios.post('/api/auth/signup', {
       userId: userData.userId,
       nickname: userData.nickname,
       password: userData.password,
@@ -24,7 +28,7 @@ export const Signup = async (userData) => {
 //로그인
 export const Login = async (userId, password) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+    const response = await axios.post('/api/auth/login', {
       userId: userId,
       password: password,
     });
@@ -41,7 +45,7 @@ export const Login = async (userId, password) => {
 export const Logout = async (token) => {
   try {
     const response = await axios.post(
-      `/api/auth/logout`,
+      '/api/auth/logout',
       {},
       {
         headers: {
@@ -59,7 +63,7 @@ export const Logout = async (token) => {
 //탈퇴
 export const Withdraw = async (password, token) => {
   try {
-    const response = await axios.delete(`/api/auth/me`, {
+    const response = await axios.delete('/api/auth/me', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -77,7 +81,7 @@ export const Withdraw = async (password, token) => {
 //비밀번호 수정
 export const UpdatePassword = async (currentPassword, newPassword, token) => {
   const response = await axios.put(
-    `/api/auth/me/password`,
+    '/api/auth/me/password',
     {
       currentPassword: currentPassword,
       newPassword: newPassword,
@@ -142,7 +146,7 @@ export const UpdateMyInfo = async (updateData, token) => {
 //아이디 중복 확인
 export const CheckIdDuplicate = async (userId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/auth/check-user-id`, {
+    const response = await axios.get('/api/auth/check-user-id', {
       params: {
         userId: userId,
       },
@@ -157,7 +161,7 @@ export const CheckIdDuplicate = async (userId) => {
 //이메일 중복 확인
 export const CheckEmailDuplicate = async (email) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/auth/check-email`, {
+    const response = await api.get('/api/auth/check-email', {
       params: {
         email: email,
       },
@@ -172,12 +176,9 @@ export const CheckEmailDuplicate = async (email) => {
 //카카오 가입/로그인
 export const KakaoLogin = async (code) => {
   try {
-    const response = await axios.post(
-      `https://mutle-be.onrender.com/api/auth/kakao`,
-      {
-        code: code,
-      },
-    );
+    const response = await axios.post(`${API_BASE_URL}/api/auth/kakao`, {
+      code: code,
+    });
     return response.data;
   } catch (error) {
     console.error('카카오 API 통신 에러', error);
@@ -186,16 +187,14 @@ export const KakaoLogin = async (code) => {
 };
 
 //구글 가입/로그인
-export const GoogleLogin = async (email) => {
+export const GoogleLogin = async (authcode) => {
   try {
     const response = await axios.post('/api/auth/google', {
-      params: {
-        email: email,
-      },
+      code: authcode,
     });
     return response.data;
   } catch (error) {
-    console.error('이메일 중복 확인 중 오류 발생', error);
+    console.error('구글 API 오류 발생', error);
     throw error;
   }
 };

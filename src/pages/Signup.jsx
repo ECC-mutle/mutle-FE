@@ -7,6 +7,7 @@ import Header from '../components/Header/Header';
 import styled from '@emotion/styled';
 import { CheckEmailDuplicate } from '../api/auth';
 import { CheckIdDuplicate } from '../api/auth';
+import { UploadImage } from '../api/image';
 
 import { Signup } from '../api/auth';
 
@@ -53,6 +54,8 @@ export default function SignupPage() {
 
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isIdChecked, setIsIdChecked] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // 입력값 변경 핸들러
   const handleChange = (e) => {
@@ -72,6 +75,16 @@ export default function SignupPage() {
       }
     } catch (error) {
       alert('중복 확인 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+
+      // 미리보기 URL 생성
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -97,12 +110,33 @@ export default function SignupPage() {
 
   const handleSubmit = async () => {
     try {
-      const result = await Signup(formData);
+      let finalProfileImageUrl = '';
+
+      // 1. 선택된 파일이 있다면 먼저 업로드 진행
+      if (selectedFile) {
+        const uploadResult = await UploadImage(selectedFile);
+        // API 응답 명세서의 예시가 { data: "string" } 이었으므로 uploadResult.data를 저장
+        finalProfileImageUrl = uploadResult.data;
+      }
+
+      // 2. 업로드된 이미지 URL을 포함하여 최종 회원가입 데이터 구성
+      const finalData = {
+        userId: formData.userId,
+        nickname: formData.nickname,
+        password: formData.password,
+        email: formData.email,
+        profileImage: finalProfileImageUrl, //url 주소도 string임!
+      };
+
+      // 3. 회원가입 API 호출
+      const result = await Signup(finalData);
+
       if (result) {
-        setStep(3); // 회원가입 완료 페이지(Step 3)로 이동
+        setStep(3); // 회원가입 완료 페이지
       }
     } catch (error) {
       alert('회원가입 처리 중 오류가 발생했습니다.');
+      console.error(error);
     }
   };
 
@@ -179,6 +213,26 @@ export default function SignupPage() {
             <div style={{ marginBottom: '10px' }}>
               프로필 이미지를 선택해주세요.
             </div>
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt='미리보기'
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '50%',
+                  marginBottom: '10px',
+                  objectFit: 'cover',
+                }}
+              />
+            )}
+
+            <input
+              type='file'
+              accept='image/*'
+              onChange={handleFileChange}
+              style={{ marginBottom: '10px' }}
+            />
             <Input
               name='nickname'
               placeholder='닉네임 입력'

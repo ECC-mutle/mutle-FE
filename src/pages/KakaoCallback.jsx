@@ -1,37 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KakaoLogin } from '../api/auth';
 
 const KakaoCallback = () => {
   const navigate = useNavigate();
+  const hasRequested = useRef(false);
 
   useEffect(() => {
-    // 1. 브라우저 주소창의 쿼리 스트링에서 'code' 값만 추출
     const code = new URL(window.location.href).searchParams.get('code');
 
-    if (code) {
+    // 이미 요청을 보냈거나 코드가 없으면 실행 안 함
+    if (code && !hasRequested.current) {
+      hasRequested.current = true; // 실행 표시
       sendCodeToBackend(code);
     }
   }, []);
 
   const sendCodeToBackend = async (code) => {
     try {
-      // 2. 백엔드 API 호출 (명세서대로 { code: "string" } 전송)
-      const response = await KakaoLogin(code);
+      const res = await KakaoLogin(code);
 
-      // 3. 성공 시 응답 데이터(accessToken 등) 처리
-      // 명세서 구조상 response.data 안에 토큰들이 들어있음
-      const { accessToken, refreshToken, userId } = response.data;
+      if (res && res.status === 'success') {
+        const { accessToken, refreshToken } = res.data;
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+        if (accessToken) {
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
 
-      alert(`반갑습니다, ${userId}님!`);
-      navigate('/'); // 메인으로 이동
+          // 알림창을 띄우기 전에 이미 저장되었는지 확인
+          alert(`반갑습니다! 로그인에 성공했습니다.`);
+          navigate('/', { replace: true });
+        }
+      }
     } catch (error) {
-      console.error('로그인 실패:', error);
-      alert('로그인 중 오류가 발생했습니다.');
-      navigate('/login');
+      // 이미 성공해서 토큰이 있는 상태라면 에러 알림을 무시합니다.
+      if (!localStorage.getItem('accessToken')) {
+        console.error('로그인 에러:', error);
+        alert('로그인 처리 중 오류가 발생했습니다.');
+        navigate('/login');
+      }
     }
   };
 

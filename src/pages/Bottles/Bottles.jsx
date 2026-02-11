@@ -88,6 +88,7 @@ export default function BottlesPage() {
   const [selectedMusic, setSelectedMusic] = useState(null);
   // 데이터 상태 관리
   const [question, setQuestion] = useState('질문을 불러오는 중...');
+  const [questionId, setQuestionId] = useState(0);
   const [music, setMusic] = useState('');
   const [memo, setMemo] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +107,7 @@ export default function BottlesPage() {
     const fetchQuestion = async () => {
       try {
         const storedToken = localStorage.getItem('token');
-        console.log('전송할 토큰:', storedToken); // 1. 토큰이 제대로 찍히는지 확인
+        console.log('전송할 토큰:', storedToken); // 토큰이 제대로 찍히는지 확인
 
         if (!storedToken) {
           setQuestion('로그인 정보가 없습니다.');
@@ -114,20 +115,22 @@ export default function BottlesPage() {
         }
 
         const res = await GettodayQuest(storedToken);
-        console.log('서버 전체 응답:', res); // 2. 여기서 데이터 구조 확인
-
-        // 서버 응답 구조가 res.data 내부에 있을 경우
-        if (res && res.data && res.data.questionText) {
+        if (res.data) {
           setQuestion(res.data.questionText);
+          setQuestionId(res.data.questionId); // 여기서 1이 제대로 들어가는지 확인
         }
-        // 만약 res 자체가 데이터일 경우를 대비
-        else if (res && res.questionText) {
-          setQuestion(res.questionText);
+        console.log('서버 전체 응답:', res); // 여기서 데이터 구조 확인
+
+        const questData = res.data;
+
+        if (questData && questData.questionText) {
+          setQuestion(questData.questionText);
+          setQuestionId(questData.questionId);
         } else {
           setQuestion('오늘의 질문을 찾을 수 없습니다.');
         }
       } catch (error) {
-        console.error('에러 디테일:', error.response); // 3. 401 에러 원인 출력
+        console.error('에러 디테일:', error.response);
         setQuestion('질문을 불러오는 중에 오류가 발생했습니다.');
       }
     };
@@ -136,19 +139,33 @@ export default function BottlesPage() {
 
   // 2. 유리병 전송 함수
   const handleSend = async (isPublic) => {
+    if (!selectedMusic) {
+      alert('음악을 선택해주세요!');
+      return;
+    }
+
     setLoading(true);
     try {
-      const token = localStorage.getItem('token'); // 로컬 스토리지 등에 저장된 토큰 사용
+      const token = localStorage.getItem('token');
+
       const bottleData = {
-        question: question,
-        music: music,
-        content: memo,
-        isPublic: isPublic, // '보내기'는 true, '나만 보기'는 false
+        questionId: Number(questionId),
+        musicInfo: {
+          musicId: Number(selectedMusic.trackId || selectedMusic.musicId || 1),
+          trackName: String(selectedMusic.trackName),
+          artistName: String(selectedMusic.artistName),
+          artworkUrl60: String(selectedMusic.artworkUrl60),
+        },
+        memo: String(memo),
+        isShared: isPublic,
       };
 
+      console.log('전송할 데이터:', bottleData); // 전송 전 데이터 확인
+
       await SendBottle(token, bottleData);
-      setStep(isPublic ? 3 : 4); // 성공 시 해당 스텝으로 이동
+      setStep(isPublic ? 3 : 4);
     } catch (error) {
+      console.error('전송 에러 상세:', error.response);
       alert('전송에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setLoading(false);

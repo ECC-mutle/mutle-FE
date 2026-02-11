@@ -5,13 +5,9 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 //유리병 보내기
 export const SendBottle = async (token, bottleData) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/api/bottles`,
-      bottleData,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const response = await axios.post('/api/bottles', bottleData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data;
   } catch (error) {
     console.error('유리병 보내기 에러', error);
@@ -22,7 +18,7 @@ export const SendBottle = async (token, bottleData) => {
 //유리병 받기
 export const GetBottle = async (token) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/bottles/random`, {
+    const response = await axios.get('/api/bottles/random', {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -36,7 +32,7 @@ export const GetBottle = async (token) => {
 export const ReactBottle = async (token, bottleId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/api/bottles/${bottleId}/reaction`,
+      `/api/bottles/${bottleId}/reaction`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -52,12 +48,9 @@ export const ReactBottle = async (token, bottleId) => {
 //유리병 반응 조회
 export const GetBottleReaction = async (token, bottleId) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/bottles/${bottleId}/reaction`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const response = await axios.get(`/api/bottles/${bottleId}/reaction`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data;
   } catch (error) {
     console.error('유리병 반응 조회 에러', error);
@@ -68,7 +61,7 @@ export const GetBottleReaction = async (token, bottleId) => {
 //오늘의 질문 조회
 export const GettodayQuest = async (token) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/bottles/todayQuest`, {
+    const response = await axios.get('/api/bottles/todayQuest', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -84,7 +77,7 @@ export const GettodayQuest = async (token) => {
 export const AddBookmark = async (token, bottleId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/api/bottles/${bottleId}/bookmark`,
+      `/api/bottles/${bottleId}/bookmark`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -100,7 +93,7 @@ export const AddBookmark = async (token, bottleId) => {
 //북마크 목록 조회
 export const GetBookmarkList = async (token) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/bottles/bookmarks`, {
+    const response = await axios.get('/api/bottles/bookmarks', {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -113,12 +106,9 @@ export const GetBookmarkList = async (token) => {
 //유리병 상세 페이지
 export const GetBottleDetail = async (token, bottleId) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/bottles/${bottleId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const response = await axios.get('/api/bottles/${bottleId}', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data;
   } catch (error) {
     console.error('유리병 상세 조회 에러', error);
