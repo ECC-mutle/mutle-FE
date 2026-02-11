@@ -291,7 +291,7 @@ export default function BottlesPage() {
               유리병을 성공적으로 전송했어요!
             </div>
             <button
-              onClick={() => setStep(1)} //이 부분을 Random으로 설정해두어야 함.
+              onClick={() => navigate('/Me')}
               style={{
                 backgroundColor: '#A2D2FF',
                 color: 'white',
@@ -300,7 +300,19 @@ export default function BottlesPage() {
                 borderRadius: '20px',
               }}
             >
-              보내기
+              홈으로 이동하기
+            </button>
+            <button
+              onClick={() => navigate('/random')}
+              style={{
+                backgroundColor: '#A2D2FF',
+                color: 'white',
+                border: 'none',
+                padding: '10px 30px',
+                borderRadius: '20px',
+              }}
+            >
+              유리병 받기!
             </button>
           </>
         )}
@@ -319,16 +331,17 @@ export default function BottlesPage() {
               유리병이 성공적으로 저장되었어요!
             </div>
             <button
-              onClick={() => setStep(1)}
+              onClick={() => navigate('/Me')}
               style={{
                 backgroundColor: '#A2D2FF',
                 color: 'white',
                 border: 'none',
                 padding: '10px 30px',
                 borderRadius: '20px',
+                cursor: 'pointer',
               }}
             >
-              OK
+              홈으로 이동
             </button>
           </>
         )}
@@ -351,5 +364,3 @@ export default function BottlesPage() {
     </Container>
   );
 }
-
-//화면은 띄워놨는데 연결은 다 안됨. 보내기 성공이라고 뜨는 건 버튼 형식임. 보내는 건 따로 연결해야함 API

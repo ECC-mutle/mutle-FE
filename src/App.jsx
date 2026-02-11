@@ -55,6 +55,8 @@ function App() {
         <Route path='/bottles/bottles' element={<BottlesPage />} />
         <Route path='/search-music' element={<SearchMusicPage />} />
         <Route path='/me' element={<Me />} />
+        <Route path='/random' element={<RandomPage />} />
+        <Route path='/island' element={<Island />} />
       </Routes>
     </BrowserRouter>
   );
