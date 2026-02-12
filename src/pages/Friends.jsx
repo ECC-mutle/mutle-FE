@@ -1,6 +1,6 @@
 import Header from '../components/Header/Header';
 import NavigateCard from '../components/Card/NavigateCard';
-import FriendsListCard from '../components/Card/FriendCard/FriendsListCard';
+import FriendsListCard from '../components/Card/FriendListCard';
 import MenuCard from '../components/Card/MenuCard';
 
 export default function Friends() {

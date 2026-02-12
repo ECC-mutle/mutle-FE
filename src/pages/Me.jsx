@@ -1,10 +1,8 @@
-import MeCard from '../components/Card/MeCard/MeCard';
+import MeCard from '../components/Card/MeCard';
 import NavigateCard from '../components/Card/NavigateCard';
 import MenuCard from '../components/Card/MenuCard';
 import Header from '../components/Header/Header';
-{
-  /* api 함수, modal 등은 Component나 Card 폴더로 빠져있음, 수정 원하면 해당 페이지 참고 */
-}
+
 export default function Me() {
   return (
     <div
