@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { useState } from 'react';
 import React from 'react';
 import './App.css';
 import styled from '@emotion/styled';
@@ -10,8 +8,15 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Island from './pages/Island';
 import Friends from './pages/Friends';
 import Me from './pages/Me';
-import SearchMusicPage from './pages/SearchMusic';
+import OnboardingPage from './pages/Onboarding';
+import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
+import RandomPage from './pages/Bottles/Random';
+import BottlesPage from './pages/Bottles/Bottles';
+import KakaoCallback from './pages/KakaoCallback';
+import GoogleCallback from './pages/GoogleCallBack';
+
+import SearchMusicPage from './pages/SearchMusic';
 
 const Background = styled.div`
   width: 100vw;
@@ -40,17 +45,20 @@ const Background = styled.div`
 }
 function App() {
   return (
-    <Background>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/island' element={<Island />} />
-          <Route path='/friends' element={<Friends />} />
-          <Route path='/me' element={<Me />} />
-          <Route path='/search-music' element={<SearchMusicPage />} />
-          <Route path='/login' element={<LoginPage />} />
-        </Routes>
-      </BrowserRouter>
-    </Background>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<OnboardingPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/kakao-callback' element={<KakaoCallback />} />
+        <Route path='/google-callback' element={<GoogleCallback />} />
+        <Route path='/signup' element={<SignupPage />} />
+        <Route path='/bottles/bottles' element={<BottlesPage />} />
+        <Route path='/search-music' element={<SearchMusicPage />} />
+        <Route path='/me' element={<Me />} />
+        <Route path='/random' element={<RandomPage />} />
+        <Route path='/island' element={<Island />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 export default App;

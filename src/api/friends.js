@@ -7,7 +7,7 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 export const SearchFriends = async (token, searchParams) => {
   try {
     const response = await axios.get('/api/friends/search', {
-      headers: { Authorization: `Bearer ${token}` },
+      Headers: { Authorization: `Bearer ${token}` },
       params: {
         type: searchParams.type,
         email: searchParams.email,
@@ -27,7 +27,7 @@ export const RequestFriend = async (token, targetId) => {
   try {
     const response = await axios.post('/api/friends/request', {
       targetId: targetId,
-      headers: { Authorization: `Bearer ${token}` },
+      Headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {

@@ -92,8 +92,9 @@ export default function SearchMusicPage() {
   };
 
   const handleSelect = (music) => {
-    //island로 검색 리턴값 이동
-    navigate('/island', { state: { selectedMusic: music } });
+    // 선택한 음악 정보를 가지고 이전 페이지로 이동
+    // state를 통해 데이터를 넘겨줌.
+    navigate('/bottles/bottles', { state: { selectedMusic: music } });
   };
 
   return (
