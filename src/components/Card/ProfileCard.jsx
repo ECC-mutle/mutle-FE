@@ -70,7 +70,6 @@ export default function ProfileCard({ profile, setProfile }) {
       <div style={styles.nickname}>{nickname}</div>
       {/* 프로필사진 영역 */}
       <div style={styles.nickname}>{profileImage}</div>
-
       {/* Bio 영역 */}
       {isEditing ? (
         <>
