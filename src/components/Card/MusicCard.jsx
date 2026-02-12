@@ -1,11 +1,45 @@
 import { useNavigate } from 'react-router-dom';
 
+import { useState } from 'react';
 export default function MusicCard({ repMusic, platforms, onEdit }) {
   // repMusic: { trackName, artistName, artworkUrl160 } 또는 null
   const trackName = repMusic?.trackName || '곡 없음';
   const artistName = repMusic?.artistName || '아티스트 없음';
   const artworkUrl = repMusic?.artworkUrl160 || '텅';
   const navigate = useNavigate();
+
+  const [showPlatformInput, setShowPlatformInput] = useState(false);
+  const [newPlatformName, setNewPlatformName] = useState('');
+  const [newPlatformNickname, setNewPlatformNickname] = useState('');
+
+  const handleAddPlatform = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const newPlatform = [
+        {
+          platformName: newPlatformName.toUpperCase(),
+          platformNickname: newPlatformNickname,
+        },
+      ];
+
+      // 기존 덮어쓰기 (의도된 동작)
+      await UpdatePlatform(newPlatform, token);
+
+      // 다시 전체 조회
+      await fetchProfileData();
+
+      // 프론트 state 즉시 업데이트
+      setPlatforms(newPlatform);
+
+      // 입력창 닫기 + 초기화
+      setShowPlatformInput(false);
+      setNewPlatformName('');
+      setNewPlatformNickname('');
+    } catch (error) {
+      console.error('플랫폼 추가 실패:', error);
+    }
+  };
 
   return (
     <div style={styles.card}>
@@ -23,25 +57,39 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
         </div>
       </div>
       <button onClick={() => navigate('/search-music')}>🔍 음악 수정</button>
-      {/* 🔗 플랫폼 버튼들 */}
+
+      {/* 🔗 플랫폼 버튼 */}
       <div style={styles.buttonGroup}>
-        {platforms?.map((platform) => {
-          return (
-            <button
-              key={platform.platformName}
-              style={styles.platformButton}
-              onClick={() =>
-                console.log(
-                  `플랫폼 이름:${platform.platformName} 
-                  아이디: ${platform.platformNickname}`,
-                )
-              }
-            >
-              {platform.platformName} · {platform.platformNickname}
-            </button>
-          );
-        })}
+        {platforms && platforms.length > 0 ? (
+          <button style={styles.platformButton}>
+            {platforms[0].platformName} · {platforms[0].platformNickname}
+          </button>
+        ) : (
+          <p
+            style={{ color: '#888', cursor: 'pointer' }}
+            onClick={() => setShowPlatformInput(true)}
+          >
+            아직 아무것도 없어요 (클릭해서 추가)
+          </p>
+        )}
       </div>
+
+      {showPlatformInput && (
+        <div style={styles.inputBox}>
+          <input
+            placeholder='플랫폼 이름 (SPOTIFY 등)'
+            value={newPlatformName}
+            onChange={(e) => setNewPlatformName(e.target.value)}
+          />
+          <input
+            placeholder='닉네임'
+            value={newPlatformNickname}
+            onChange={(e) => setNewPlatformNickname(e.target.value)}
+          />
+          <button onClick={handleAddPlatform}>추가</button>
+          <button onClick={() => setShowPlatformInput(false)}>취소</button>
+        </div>
+      )}
     </div>
   );
 }

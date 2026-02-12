@@ -42,12 +42,23 @@ export default function ProfileCard({ profile, setProfile }) {
   };
   const handleSave = async () => {
     try {
-      setOriginalBio(bioText);
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
       await UpdateBio(bioText, token);
-      setIsEditing(false); // 수정 끝나면 입력창 닫기
-      setProfile((prev) => ({ ...prev, bio: bioText })); // 부모 state 업데이트
+
+      setIsEditing(false);
+
+      setProfile((prev) => ({
+        ...(prev || {}),
+        bio: bioText,
+      }));
     } catch (error) {
-      console.error('Bio 업데이트 실패', error);
+      console.log(error.response?.data);
       alert('수정 실패!');
     }
   };
