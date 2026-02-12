@@ -39,14 +39,29 @@ export const UpdateBio = async (bio, token) => {
 export const UpdateRepMusic = async (musicData, token) => {
   try {
     const response = await axios.put(
-      `${API_BASE_URL}/api/island/rep-music`,
-      musicData,
+      '/api/island/bio',
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        bio: bio,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
       },
     );
+    return response.data;
+  } catch (error) {
+    console.error('대표곡 수정 에러:', error);
+    throw error;
+  }
+};
+
+//대표곡 수정
+export const UpdateRepMusic = async (musicData, token) => {
+  try {
+    const response = await axios.put('/api/island/rep-music', musicData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('대표곡 수정 에러:', error);
@@ -57,8 +72,24 @@ export const UpdateRepMusic = async (musicData, token) => {
 //대표곡 삭제
 export const DeleteRepMusic = async (token) => {
   try {
-    const response = await axios.delete(
-      `${API_BASE_URL}/api/island/rep-music`,
+    const response = await axios.delete('/api/island/rep-music', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('대표곡 삭제 에러:', error);
+    throw error;
+  }
+};
+
+//플랫폼 수정(생성)
+export const UpdatePlatform = async (platformsArray, token) => {
+  try {
+    const response = await axios.put(
+      '/api/island/platforms',
+      { platforms: platformsArray },
       {
         headers: {
           Authorization: `Bearer ${token}`,
