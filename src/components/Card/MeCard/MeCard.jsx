@@ -3,30 +3,76 @@ import { useState } from 'react';
 import SettingItem from './SettingItem';
 import { Card, Header, Title, SettingList } from './MeCard.style';
 import ConfirmModal from '../../Modal/ConfirmModal';
-import { Withdraw } from '../../../api/auth';
+import PasswordChangeModal from '../../Modal/PasswordModal';
+import { Withdraw, Logout, UpdatePassword } from '../../../api/auth';
 
 export default function MeCard() {
   const navigate = useNavigate();
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isUpdatePasswordOpen, setIsUpdatePasswordOpen] = useState(false);
+
   const token = localStorage.getItem('token');
 
-  // 탈퇴 처리 함수 정의
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        await Logout(token);
+      }
+
+      localStorage.removeItem('token');
+      setIsLogoutOpen(false);
+      navigate('/');
+
+      console.log('로그아웃 성공');
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    }
+  };
+
+  const handleUpdatePassword = async ({ currentPassword, newPassword }) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await UpdatePassword(currentPassword, newPassword, token);
+      }
+      alert('비밀번호 변경 성공');
+
+      setIsUpdatePasswordOpen(false);
+    } catch (error) {
+      console.error('비밀번호 변경 오류 발생:', error);
+      alert('비밀번호 변경 실패');
+    }
+  };
+
   const handleWithdraw = async (password) => {
     try {
-      await Withdraw(password, token); // 여기서 token 사용
-      localStorage.removeItem('token'); // 로그아웃 처리
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        await Withdraw(password, token);
+      }
+
+      localStorage.removeItem('token');
       setIsWithdrawOpen(false);
+
+      console.log('탈퇴 성공');
     } catch (error) {
-      console.error(error);
-      alert('회원 탈퇴 실패');
+      console.error('탈퇴 중 오류 발생:', error);
     }
   };
 
   return (
     <Card>
       <Header>환경설정</Header>
-      <Title>계정 정보</Title>
       <SettingList>
+        <SettingItem
+          title='계정 정보'
+          description='나의 계정 정보를 확인합니다'
+          onClick={() => console.log('프로필 확인')}
+        />
         <SettingItem
           title='프로필 수정'
           description='닉네임, 프로필 사진을 변경합니다'
@@ -34,15 +80,19 @@ export default function MeCard() {
         />
 
         <SettingItem
-          title='로그아웃'
-          description='현재 로그인된 계정에서 로그아웃합니다'
-          onClick={() => console.log('로그아웃')}
+          title='비밀번호 변경'
+          description='설정한 비밀번호를 변경합니다'
+          onClick={() => {
+            setIsUpdatePasswordOpen(true);
+          }}
         />
 
         <SettingItem
-          title='ID 변경'
-          description='설정한 ID를 변경합니다'
-          onClick={() => console.log('ID 변경')}
+          title='로그아웃'
+          description='현재 로그인된 계정에서 로그아웃합니다'
+          onClick={() => {
+            setIsLogoutOpen(true);
+          }}
         />
 
         <SettingItem
@@ -51,6 +101,25 @@ export default function MeCard() {
           isDanger
           onClick={() => setIsWithdrawOpen(true)}
         />
+
+        {isUpdatePasswordOpen && (
+          <PasswordChangeModal
+            onClose={() => setIsUpdatePasswordOpen(false)}
+            onConfirm={handleUpdatePassword}
+          />
+        )}
+
+        {isLogoutOpen && (
+          <ConfirmModal
+            title='정말 로그아웃하시겠어요?'
+            description='로그아웃하면 다시 로그인해야 합니다.'
+            confirmText='로그아웃'
+            cancelText='취소'
+            isDanger
+            onClose={() => setIsLogoutOpen(false)}
+            onConfirm={handleLogout}
+          />
+        )}
 
         {isWithdrawOpen && (
           <ConfirmModal
@@ -61,8 +130,8 @@ export default function MeCard() {
             isDanger
             requireInput
             inputPlaceholder='비밀번호 입력'
-            onClose={() => setIsWithdrawOpen(false)}
             onConfirm={handleWithdraw}
+            onClose={() => setIsWithdrawOpen(false)}
           />
         )}
       </SettingList>
