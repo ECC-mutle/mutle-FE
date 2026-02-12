@@ -1,11 +1,13 @@
 // src/pages/Bottles/Random.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Header from '../../components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BottleImg from '../../assets/images/유리병_png.png';
+import { Link } from 'react-router-dom';
+import { GetBottle, ReactBottle, AddBookmark } from '../../api/bottles';
 
 const BottleImage = styled.img`
   width: 150px;
@@ -15,6 +17,7 @@ const BottleImage = styled.img`
     transform: scale(1.1);
   }
 `;
+//유리병 이미지는 고정!
 
 const styles = {
   container: {
@@ -121,71 +124,139 @@ const styles = {
   },
 };
 
-const RandomPage = () => {
+export default function RandomPage() {
+  const navigate = useNavigate();
   // viewMode: 'list' (유리병 화면), 'detail' (메시지 화면)
   const [viewMode, setViewMode] = useState('list');
+  const [bottle, setBottle] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // 임시 데이터
-  const messageData = {
-    sender: '유저이름',
-    question: '겨울에 가장 듣고 싶은 노래는?',
-    songTitle: '그대 내게 다시',
-    artist: '럼블피쉬',
-    memo: '메모 내용이 여기에 들어갑니다.',
-    likes: 13,
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchBottle = async () => {
+      try {
+        setLoading(true);
+        const response = await GetBottle(token);
+
+        // 중요: 콘솔을 찍어서 데이터가 어떻게 생겼는지 꼭 확인하세요!
+        console.log('서버 응답 데이터:', response);
+
+        // 만약 response 자체가 객체라면 response를,
+        // 만약 response.data 안에 진짜 내용이 있다면 response.data를 넣어야 합니다.
+        // 보통 공통 응답 포맷을 쓰면 response.data에 실제 데이터가 들어있습니다.
+        const actualData = response.data || response;
+        setBottle(actualData);
+      } catch (error) {
+        console.error('유리병 로드 실패', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBottle();
+  }, [token]);
+
+  // 2. 하트 클릭: 유리병 반응 남기기
+  const handleLike = async (e) => {
+    e.stopPropagation();
+
+    // 1. 데이터가 있는지 먼저 확인
+    if (!bottle || !bottle.bottleId) {
+      console.error('유리병 정보가 없어 반응을 남길 수 없습니다.', bottle);
+      return;
+    }
+
+    console.log('반응을 남길 유리병 ID:', bottle.bottleId); // 여기서 2가 나오는지 485가 나오는지 확인!
+
+    try {
+      await ReactBottle(token, bottle.bottleId);
+      // 서버 응답 구조에 맞춰 totalCount 증가
+      setBottle({ ...bottle, totalCount: (bottle.totalCount || 0) + 1 });
+      alert('마음을 전했습니다! ❤️');
+    } catch (error) {
+      alert('반응을 남기는 데 실패했습니다. (인증 오류 가능성)');
+    }
   };
+
+  // 3. 저장하기: 북마크 추가
+  const handleSave = async () => {
+    try {
+      await AddBookmark(token, bottle.bottleId);
+      alert('유리병을 보관함에 저장했어요! ✨');
+    } catch (error) {
+      alert('저장에 실패했거나 이미 저장된 유리병입니다.');
+    }
+  };
+
+  if (loading) return <div style={styles.container}>유리병을 건지는 중...</div>;
+  if (!bottle)
+    return (
+      <div style={styles.container}>현재 바다에 떠다니는 유리병이 없네요.</div>
+    );
 
   return (
     <div style={styles.container}>
       <main style={styles.card}>
         <div style={styles.titleBar}>
-          {messageData.sender} 이 유리병을 보내왔어요!
+          {bottle.sender?.senderNickname || '익명'} 님이 유리병을 보내왔어요!
         </div>
 
         {viewMode === 'list' ? (
-          /* 1. 유리병 화면 */
           <div
             style={styles.contentCenter}
             onClick={() => setViewMode('detail')}
           >
-            <div>
-              <BottleImage src={BottleImg} alt='유리병' />
-            </div>
-
+            <BottleImage src={BottleImg} alt='유리병' />
             <p style={styles.guideText}>클릭하여 자세히 보기</p>
           </div>
         ) : (
-          /* 2. 상세 내용 화면 */
           <div style={styles.detailContent}>
-            <div style={styles.questionBox}>Q. {messageData.question}</div>
+            <div style={styles.questionBox}>Q. {bottle.questionText}</div>
 
             <div style={styles.musicBox}>
-              <div style={styles.albumArt}>🎵</div>
+              <div style={styles.albumArt}>
+                {bottle.musicInfo?.artworkUrl60 ? (
+                  <img
+                    src={bottle.musicInfo.artworkUrl60}
+                    alt='앨범커버'
+                    style={{ width: '100%' }}
+                  />
+                ) : (
+                  '🎵'
+                )}
+              </div>
               <div style={styles.musicInfo}>
                 <p>
-                  <strong>{messageData.songTitle}</strong>
+                  <strong>{bottle.musicInfo?.trackName}</strong>
                 </p>
-                <p>{messageData.artist}</p>
+                <p>{bottle.musicInfo.artistName}</p>
               </div>
             </div>
 
             <div style={styles.memoBox}>
-              <p>{messageData.memo}</p>
-              <span style={styles.heart}>❤️ {messageData.likes}</span>
+              <p>{bottle.memo}</p>
+              {/* 하트 버튼 클릭 시 handleLike 호출 */}
+              <span
+                style={{ ...styles.heart, cursor: 'pointer' }}
+                onClick={handleLike}
+              >
+                ❤️ {bottle.totalCount || 0}
+              </span>
             </div>
 
             <div style={styles.buttonGroup}>
-              <button style={styles.btnNav} onClick={() => setViewMode('list')}>
+              {/* 넘어가기: Me 페이지로 이동 */}
+              <button style={styles.btnNav} onClick={() => navigate('/Me')}>
                 넘어가기
               </button>
-              <button style={styles.btnStore}>저장하기</button>
+              {/* 저장하기: 북마크 API 호출 */}
+              <button style={styles.btnStore} onClick={handleSave}>
+                저장하기
+              </button>
             </div>
           </div>
         )}
       </main>
     </div>
   );
-};
-export default RandomPage;
-
-//일단 state로 설정해둠. api 호출할 때 홈 화면이랑 연결해야함! (not state...)
+}
