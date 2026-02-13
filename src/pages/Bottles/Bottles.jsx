@@ -1,5 +1,5 @@
 // src/pages/Bottles/Bottles.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import BottleImg from '../../assets/images/유리병_png.png';
