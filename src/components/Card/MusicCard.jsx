@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-
 import { useState } from 'react';
+
 export default function MusicCard({ repMusic, platforms, onEdit }) {
-  // repMusic: { trackName, artistName, artworkUrl160 } 또는 null
+  // repMusic: { trackName, artistName, artworkUrl60 } 또는 null
   const trackName = repMusic?.trackName || '곡 없음';
   const artistName = repMusic?.artistName || '아티스트 없음';
-  const artworkUrl = repMusic?.artworkUrl160 || '텅';
+  const artworkUrl = repMusic?.artworkUrl60 || '텅';
   const navigate = useNavigate();
 
   const [showPlatformInput, setShowPlatformInput] = useState(false);
@@ -56,7 +56,11 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
           </div>
         </div>
       </div>
-      <button onClick={() => navigate('/search-music')}>🔍 음악 수정</button>
+      <button onClick={() => navigate('/search-music-island')}>
+        {' '}
+        {}
+        🔍 음악 수정
+      </button>
 
       {/* 🔗 플랫폼 버튼 */}
       <div style={styles.buttonGroup}>

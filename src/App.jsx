@@ -1,8 +1,6 @@
 import React from 'react';
 import './App.css';
 import styled from '@emotion/styled';
-import Header from './components/Header/Header';
-
 import BackgroundImage from './assets/images/BackgroundPic.png';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Island from './pages/Island';
@@ -13,10 +11,12 @@ import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
 import RandomPage from './pages/Bottles/Random';
 import BottlesPage from './pages/Bottles/Bottles';
+import BookmarksPage from './pages/Bottles/Bookmarks';
 import KakaoCallback from './pages/KakaoCallback';
 import GoogleCallback from './pages/GoogleCallBack';
 
 import SearchMusicPage from './pages/SearchMusic';
+import SearchMusicPage_island from './pages/SearchMusic_island';
 
 const Background = styled.div`
   width: 100vw;
@@ -57,6 +57,12 @@ function App() {
         <Route path='/me' element={<Me />} />
         <Route path='/random' element={<RandomPage />} />
         <Route path='/island' element={<Island />} />
+        <Route path='/friends' element={<Friends />} />
+        <Route path='/bookmarks' element={<BookmarksPage />} />
+        <Route
+          path='/search-music-island'
+          element={<SearchMusicPage_island />}
+        />
       </Routes>
     </BrowserRouter>
   );
