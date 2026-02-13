@@ -21,17 +21,6 @@ export default function NavigateCard() {
       </button>
 
       <button
-        onClick={() => console.log('편집 모드')}
-        style={{
-          padding: '12px 24px',
-          backgroundColor: '#e5e7eb',
-
-          fontSize: '16px',
-        }}
-      >
-        편집 모드
-      </button>
-      <button
         type='button'
         onClick={() => {
           navigate('/me');

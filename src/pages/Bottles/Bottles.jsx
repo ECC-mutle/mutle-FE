@@ -1,8 +1,5 @@
 // src/pages/Bottles/Bottles.jsx
 import React, { useState, useEffect } from 'react';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
-import Header from '../../components/Header/Header';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import BottleImg from '../../assets/images/유리병_png.png';
@@ -92,6 +89,17 @@ export default function BottlesPage() {
   const [music, setMusic] = useState('');
   const [memo, setMemo] = useState('');
   const [loading, setLoading] = useState(false);
+  const hasRequested = useRef(false);
+
+  useEffect(() => {
+    const code = new URL(window.location.href).searchParams.get('code');
+
+    // 이미 요청을 보냈거나 코드가 없으면 실행 안 함
+    if (code && !hasRequested.current) {
+      hasRequested.current = true; // 실행 표시
+      sendCodeToBackend(code);
+    }
+  }, []);
 
   // 1. 오늘의 질문 가져오기
   useEffect(() => {
@@ -253,7 +261,7 @@ export default function BottlesPage() {
                 disabled={loading}
                 style={{
                   padding: '10px 20px',
-                  backgroundColor: '#A2D2FF',
+                  backgroundColor: '#ffffff',
                   border: 'none',
                   borderRadius: '20px',
                   color: 'white',

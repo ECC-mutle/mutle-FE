@@ -28,7 +28,7 @@ export default function MenuCard() {
         }}
       >
         <button
-          onClick={() => console.log('유리병 보내기')}
+          onClick={() => navigate('/bottles/bottles')}
           style={{
             width: '100%',
             textAlign: 'left',
@@ -42,7 +42,7 @@ export default function MenuCard() {
           ≡ 유리병 보내기
         </button>
         <button
-          onClick={() => console.log('받은 유리병 보기')}
+          onClick={() => navigate('/bookmarks')}
           style={{
             width: '100%',
             textAlign: 'left',
