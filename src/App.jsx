@@ -7,7 +7,7 @@ import BackgroundImage from './assets/images/BackgroundPic.png';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Island from './pages/Island';
 import Friends from './pages/Friends';
-import Me from './pages/Me';
+import Me from './pages/Me/Me';
 import OnboardingPage from './pages/Onboarding';
 import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
