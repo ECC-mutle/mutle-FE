@@ -12,6 +12,7 @@ import LoginPage from './pages/Login';
 import RandomPage from './pages/Bottles/Random';
 import BottlesPage from './pages/Bottles/Bottles';
 import BookmarksPage from './pages/Bottles/Bookmarks';
+import BottleDetailPage from './pages/Bottles/BottleDetailPage';
 import KakaoCallback from './pages/KakaoCallback';
 import GoogleCallback from './pages/GoogleCallBack';
 import AccountPage from './pages/AccountInfo';
@@ -65,6 +66,7 @@ function App() {
           element={<SearchMusicPage_island />}
         />
         <Route path='/accountinfo' element={<AccountPage />} />
+        <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
       </Routes>
     </BrowserRouter>
   );

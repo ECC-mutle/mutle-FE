@@ -46,11 +46,11 @@ const styles = {
   },
 };
 
-//달력은 날짜 정보를 어떻게 사용하는지 헷갈려서 아직 구현 안함 ㅜ
 export default function Island() {
   const [profile, setProfile] = useState(null);
   const [repMusic, setRepMusic] = useState(null);
   const [platforms, setPlatforms] = useState([]);
+  const [musicCalendar, setMusicCalendar] = useState([]);
   const location = useLocation();
 
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
@@ -114,6 +114,8 @@ export default function Island() {
 
       // MusicCard용
       setRepMusic(data.repMusic || null);
+      // Calendar용
+      setMusicCalendar(data.calendars || []);
 
       // Platform 버튼용
       setPlatforms(data.platforms || []);
@@ -150,7 +152,7 @@ export default function Island() {
           </div>
 
           {/* 하단: 캘린더 */}
-          <CalendarCard />
+          <CalendarCard calendarData={musicCalendar} />
         </div>
 
         {/* 오른쪽: 메뉴 */}
