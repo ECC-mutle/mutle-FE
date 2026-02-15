@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header/Header';
 import ProfileCard from '../components/Card/ProfileCard';
 import MusicCard from '../components/Card/MusicCard';
@@ -6,7 +6,7 @@ import CalendarCard from '../components/Card/CalendarCard';
 import MenuCard from '../components/Card/MenuCard';
 import NavigateCard from '../components/Card/NavigateCard';
 import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../api/island';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 // 스타일 객체 분리
 const styles = {
@@ -52,6 +52,11 @@ export default function Island() {
   const [repMusic, setRepMusic] = useState(null);
   const [platforms, setPlatforms] = useState([]);
   const location = useLocation();
+  const { userId: friendUserId } = useParams();
+  const myUserId = localStorage.getItem('userId'); // poiu
+
+  const targetUserId = friendUserId || myUserId;
+  const isMyIsland = !friendUserId || friendUserId === myUserId;
 
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
     try {
@@ -88,21 +93,24 @@ export default function Island() {
     }
   }, [location.state]);
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
+    console.log('fetchProfileData');
+
     try {
       const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
-      console.log('token', localStorage.getItem('token'));
-      console.log('userId', localStorage.getItem('userId'));
+      //const userId = localStorage.getItem('userId');
+      //console.log('token', localStorage.getItem('token'));
+      //console.log('userId', localStorage.getItem('userId'));
 
-      if (!token || !userId) return;
+      if (!token || !targetUserId) return;
 
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
 
-      const res = await GetProfile(userId, token, year, month);
+      const res = await GetProfile(targetUserId, token, year, month);
       console.log('프로필 서버 응답:', res);
+
       const data = res.data;
 
       // ProfileCard용
@@ -118,23 +126,20 @@ export default function Island() {
       // Platform 버튼용
       setPlatforms(data.platforms || []);
     } catch (error) {
-      console.error(error);
+      console.error('데이터 로딩 실패:', error);
     }
-  };
+  }, [targetUserId]);
 
   useEffect(() => {
-    fetchProfileData(); //서버값
-  }, []);
+    fetchProfileData();
+  }, [fetchProfileData]);
 
   useEffect(() => {
     const updateSelectedMusic = async () => {
       const selectedMusic = location.state?.selectedMusic;
-
-      if (selectedMusic) {
+      if (selectedMusic && isMyIsland) {
         try {
           const token = localStorage.getItem('token');
-          if (!token) return;
-
           await UpdateRepMusic(
             {
               trackName: selectedMusic.trackName,
@@ -145,18 +150,15 @@ export default function Island() {
           );
 
           await fetchProfileData();
-
           window.history.replaceState({}, document.title);
         } catch (error) {
           console.error('음악 업데이트 실패:', error);
-          alert('음악을 저장하지 못했습니다.');
         }
       }
     };
 
     updateSelectedMusic();
-  }, [location.state]);
-
+  }, [location.state, isMyIsland, fetchProfileData]);
   return (
     <div style={styles.container}>
       <Header />
@@ -170,13 +172,18 @@ export default function Island() {
         <div style={styles.leftSection}>
           {/* 상단: 프로필 + 음악 카드 */}
           <div style={styles.topCards}>
-            <ProfileCard profile={profile} setProfile={setProfile} />
+            <ProfileCard
+              profile={profile}
+              setProfile={setProfile}
+              isEditable={isMyIsland}
+            />
 
             <MusicCard
               repMusic={repMusic}
               platforms={platforms}
               // 자식에게 부모의 로직(함수)을 통째로 넘깁니다.
               handleAddPlatform={handleAddPlatform}
+              onAddPlatform={isMyIsland ? handleAddPlatform : null}
             />
           </div>
 

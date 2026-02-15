@@ -58,6 +58,7 @@ function App() {
         <Route path='/me' element={<Me />} />
         <Route path='/random' element={<RandomPage />} />
         <Route path='/island' element={<Island />} />
+        <Route path='/island/:userId' element={<Island />} />
         <Route path='/friends' element={<Friends />} />
         <Route path='/bookmarks' element={<BookmarksPage />} />
         <Route
