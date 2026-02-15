@@ -3,7 +3,7 @@ import Header from '../../components/Header/Header';
 import MenuCard from '../../components/Card/MenuCard';
 import NavigateCard from '../../components/Card/NavigateCard';
 import BottleCard from '../../components/Card/BottleCard';
-import { AddBookmark } from '../../api/bottles';
+import { GetBookmarkList } from '../../api/bottles';
 
 const styles = {
   container: {
@@ -60,11 +60,11 @@ export default function BookmarksPage() {
     const fetchBottles = async () => {
       try {
         const token = localStorage.getItem('token');
-        const bottleId = localStorage.getItem('bottleId');
+        const res = await GetBookmarkList(token);
 
-        const res = await AddBookmark(token, bottleId);
+        console.log('서버 응답:', res);
 
-        setBottles(res.data.bottles);
+        setBottles(res.data || []);
       } catch (error) {
         console.error('데이터 로드 실패:', error);
       }
@@ -87,7 +87,7 @@ export default function BookmarksPage() {
             <div style={styles.scrollArea}>
               <div style={styles.grid}>
                 {bottles.map((item, idx) => (
-                  <BottleCard key={idx} item={item} />
+                  <BottleCard key={idx} data={item} />
                 ))}
               </div>
             </div>

@@ -1,30 +1,49 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BottleCard = ({ data }) => {
+  const navigate = useNavigate();
+
+  if (!data) return null;
+
+  const handleDetailClick = () => {
+    navigate(`/bookmarkbottles/${data.bottleId}`);
+  };
+
   return (
     <div style={styles.card}>
       {/* 상단: 프로필 및 아이디 */}
       <div style={styles.profileSection}>
-        <img src={data.profileImg} alt='profile' style={styles.profileImg} />
-        <span style={styles.userId}>{data.userId}</span>
+        <img
+          src={data.senderProfileImage}
+          alt='profile'
+          style={styles.profileImg}
+        />
+        <span style={styles.userId}>{data.senderNickname}</span>
         <span style={styles.star}>⭐</span>
       </div>
 
       {/* 질문 영역 */}
-      <div style={styles.questionBox}>Q. {data.question}</div>
+      <div style={styles.questionBox}>Q. {data.questionText}</div>
 
       {/* 음악 정보 영역 (미리보기) */}
       <div style={styles.musicBox}>
-        <img src={data.artworkUrl} alt='album' style={styles.albumArt} />
-        <div style={styles.musicText}>
-          <div style={styles.trackName}>{data.trackName}</div>
-          <div style={styles.artistName}>{data.artistName}</div>
+        <img
+          src={data.musicInfo.artworkUrl60}
+          alt='album'
+          style={styles.albumArt}
+        />
+        <div style={styles.musicInfo}>
+          <div style={styles.trackName}>{data.musicInfo.trackName}</div>
+          <div style={styles.artistName}>{data.musicInfo.artistName}</div>
         </div>
       </div>
 
       {/* 하단: 상세보기 버튼 */}
       <div style={styles.buttonWrapper}>
-        <button style={styles.detailButton}>상세보기</button>
+        <button style={styles.detailButton} onClick={handleDetailClick}>
+          상세보기
+        </button>
       </div>
     </div>
   );
