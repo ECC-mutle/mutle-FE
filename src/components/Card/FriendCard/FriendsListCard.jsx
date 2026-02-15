@@ -16,7 +16,7 @@ import {
 
 export default function FriendsListCard() {
   const [friends, setFriends] = useState([]);
-  const [searchId, setSearchId] = useState('');
+  const [searchuserId, setSearchuserId] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function FriendsListCard() {
   "message": "string",
   "data": [
     {
-      "id": 0,
+      "id": 0, -> userid로 수정됨. 
       "nickname": "string",
       "profileImage": "string",
       "bio": "string",
@@ -47,7 +47,7 @@ export default function FriendsListCard() {
   useEffect(() => {
     if (!token) return;
 
-    const fetchFriends = async () => {
+    const fetchFriends = async (token) => {
       try {
         setLoading(true);
         const res = await GetFriendList(token);
@@ -59,20 +59,20 @@ export default function FriendsListCard() {
       }
     };
 
-    fetchFriends();
+    fetchFriends(token);
   }, [token]);
 
   // 친구 검색
   const handleSearch = async () => {
-    if (!searchId) return;
+    if (!searchuserId.trim()) return;
 
     try {
       setLoading(true);
       setIsSearching(true);
 
       const result = await SearchFriends(token, {
-        type: 'ID', // 또는 EMAIL
-        userId: searchId,
+        type: 'ID',
+        userId: searchuserId,
       });
 
       setSearchResult(result.data);
@@ -87,43 +87,59 @@ export default function FriendsListCard() {
   const handleBack = () => {
     setIsSearching(false);
     setSearchResult(null);
-    setSearchId('');
+    setSearchuserId('');
+    setLoading(false);
   };
 
   return (
     <Card>
       <Header>
         <h2>친구 목록</h2>
-        {isSearching && <BackButton onClick={handleBack}>목록으로</BackButton>}
+        {isSearching && (
+          <SearchButton
+            onClick={handleBack}
+            style={{ backgroundColor: '#ccc' }}
+          >
+            목록으로 돌아가기
+          </SearchButton>
+        )}
       </Header>
 
+      {/* 검색창: 검색 중이 아닐 때만 노출 */}
       {!isSearching && (
         <SearchRow>
           <Input
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder='검색할 ID / 이메일'
+            value={searchuserId}
+            onChange={(e) => setSearchuserId(e.target.value)}
+            placeholder='검색할 ID / 이메일을 입력하세요'
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <SearchButton onClick={handleSearch}>검색</SearchButton>
+          <SearchButton onClick={handleSearch}>검색하기</SearchButton>
         </SearchRow>
       )}
 
       {loading && <p>로딩 중...</p>}
 
-      {isSearching && searchResult && (
-        <>
-          <ResultBox>'{searchId}' 검색 결과</ResultBox>
-          <NotFriendItem friend={searchResult} isSearchResult />
-        </>
-      )}
-
-      {!isSearching && (
-        <List>
-          {friends.map((friend) => (
-            <FriendItem key={friend.id} friend={friend} />
-          ))}
-        </List>
-      )}
+      <List>
+        {/* CASE 1: 검색 결과 표시 */}
+        {isSearching && searchResult ? (
+          <>
+            <ResultBox>'{searchuserId}' 의 검색 결과입니다.</ResultBox>
+            {/* 검색된 유저는 친구가 아닐 수 있으므로 NotFriendItem 사용 */}
+            <NotFriendItem friend={searchResult} isSearchResult />
+          </>
+        ) : (
+          /* CASE 2: 기존 친구 목록 표시 (검색 중이 아닐 때) */
+          !isSearching &&
+          friends.map((friend) => (
+            <FriendItem
+              key={friend.userid}
+              friend={friend}
+              // 친구 목록에서는 '방문하기'와 '친구 삭제' 버튼이 모두 필요함
+            />
+          ))
+        )}
+      </List>
     </Card>
   );
 }

@@ -5,7 +5,7 @@ import MusicCard from '../components/Card/MusicCard';
 import CalendarCard from '../components/Card/CalendarCard';
 import MenuCard from '../components/Card/MenuCard';
 import NavigateCard from '../components/Card/NavigateCard';
-import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../api/island';
+import { GetProfile, UpdatePlatform } from '../api/island';
 import { useLocation, useParams } from 'react-router-dom';
 
 // 스타일 객체 분리
@@ -52,11 +52,11 @@ export default function Island() {
   const [repMusic, setRepMusic] = useState(null);
   const [platforms, setPlatforms] = useState([]);
   const location = useLocation();
-  const { userId: friendUserId } = useParams();
-  const myUserId = localStorage.getItem('userId'); // poiu
+  const { userId: urlUserId } = useParams();
 
-  const targetUserId = friendUserId || myUserId;
-  const isMyIsland = !friendUserId || friendUserId === myUserId;
+  const myUserId = localStorage.getItem('userId');
+  const targetUserId = urlUserId || myUserId;
+  const isMyIsland = !urlUserId || urlUserId === myUserId;
 
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
     try {
@@ -94,15 +94,15 @@ export default function Island() {
   }, [location.state]);
 
   const fetchProfileData = useCallback(async () => {
-    console.log('fetchProfileData');
-
     try {
       const token = localStorage.getItem('token');
-      //const userId = localStorage.getItem('userId');
-      //console.log('token', localStorage.getItem('token'));
-      //console.log('userId', localStorage.getItem('userId'));
+      console.log('token', localStorage.getItem('token'));
+      console.log('userId', localStorage.getItem('userId'));
 
-      if (!token || !targetUserId) return;
+      if (!token || !targetUserId) {
+        console.warn('인증 정보나 대상 ID가 없습니다.');
+        return;
+      }
 
       const now = new Date();
       const year = now.getFullYear();
@@ -110,9 +110,7 @@ export default function Island() {
 
       const res = await GetProfile(targetUserId, token, year, month);
       console.log('프로필 서버 응답:', res);
-
-      const data = res.data;
-
+      const data = res.data || res;
       // ProfileCard용
       setProfile({
         nickname: data.nickname,
@@ -126,39 +124,14 @@ export default function Island() {
       // Platform 버튼용
       setPlatforms(data.platforms || []);
     } catch (error) {
-      console.error('데이터 로딩 실패:', error);
+      console.error('데이털 로딩 실패: ', error);
     }
   }, [targetUserId]);
 
   useEffect(() => {
-    fetchProfileData();
+    fetchProfileData(); //서버값
   }, [fetchProfileData]);
 
-  useEffect(() => {
-    const updateSelectedMusic = async () => {
-      const selectedMusic = location.state?.selectedMusic;
-      if (selectedMusic && isMyIsland) {
-        try {
-          const token = localStorage.getItem('token');
-          await UpdateRepMusic(
-            {
-              trackName: selectedMusic.trackName,
-              artistName: selectedMusic.artistName,
-              artworkUrl60: selectedMusic.artworkUrl60,
-            },
-            token,
-          );
-
-          await fetchProfileData();
-          window.history.replaceState({}, document.title);
-        } catch (error) {
-          console.error('음악 업데이트 실패:', error);
-        }
-      }
-    };
-
-    updateSelectedMusic();
-  }, [location.state, isMyIsland, fetchProfileData]);
   return (
     <div style={styles.container}>
       <Header />
