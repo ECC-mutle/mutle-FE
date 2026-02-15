@@ -26,4 +26,4 @@ const Button = ({
   );
 };
 
-export default Button; // 다른 파일에서 Button 쓸 수 있도록 내보내기
+export default Button;
