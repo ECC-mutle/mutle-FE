@@ -170,7 +170,14 @@ export default function BottlesPage() {
 
       console.log('전송할 데이터:', bottleData); // 전송 전 데이터 확인
 
+      // 1. 유리병 전송 API 호출
       await SendBottle(token, bottleData);
+
+      // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옵니다.
+      // 이 작업이 수행되어야 musicCalendar에 방금 보낸 병이 추가됩니다.
+      if (typeof fetchProfileData === 'function') {
+        await fetchProfileData();
+      }
       setStep(isPublic ? 3 : 4);
     } catch (error) {
       console.error('전송 에러 상세:', error.response);
