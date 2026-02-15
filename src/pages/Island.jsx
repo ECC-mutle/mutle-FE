@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header/Header';
 import ProfileCard from '../components/Card/ProfileCard';
 import MusicCard from '../components/Card/MusicCard';
 import CalendarCard from '../components/Card/CalendarCard';
 import MenuCard from '../components/Card/MenuCard';
 import NavigateCard from '../components/Card/NavigateCard';
-import { GetProfile } from '../api/island';
-import { useLocation } from 'react-router-dom';
+import { GetProfile, UpdatePlatform } from '../api/island';
+import { useLocation, useParams } from 'react-router-dom';
 
 // 스타일 객체 분리
 const styles = {
@@ -52,6 +52,40 @@ export default function Island() {
   const [repMusic, setRepMusic] = useState(null);
   const [platforms, setPlatforms] = useState([]);
   const location = useLocation();
+  const { userId: urlUserId } = useParams();
+
+  const myUserId = localStorage.getItem('userId');
+  const targetUserId = urlUserId || myUserId;
+  const isMyIsland = !urlUserId || urlUserId === myUserId;
+
+  const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const newPlatform = [
+        {
+          platformName: newPlatformName.toUpperCase(),
+          platformNickname: newPlatformNickname,
+        },
+      ];
+
+      // 기존 덮어쓰기 (의도된 동작)
+      await UpdatePlatform(newPlatform, token);
+
+      // 다시 전체 조회
+      await fetchProfileData();
+
+      // 프론트 state 즉시 업데이트
+      // setPlatforms(newPlatform);
+
+      // 입력창 닫기 + 초기화
+      // setShowPlatformInput(false);
+      // setNewPlatformName('');
+      // setNewPlatformNickname('');
+    } catch (error) {
+      console.error('플랫폼 추가 실패:', error);
+    }
+  };
 
   useEffect(() => {
     if (location.state?.selectedMusic) {
@@ -59,41 +93,44 @@ export default function Island() {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('userId');
+  const fetchProfileData = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('token', localStorage.getItem('token'));
+      console.log('userId', localStorage.getItem('userId'));
 
-        if (!token || !userId) return;
-
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-
-        const res = await GetProfile(userId, token, year, month);
-
-        const data = res.data;
-
-        // 🔥 ProfileCard용
-        setProfile({
-          nickname: data.nickname,
-          profileImage: data.profileImage,
-          bio: data.bio,
-        });
-
-        // 🔥 MusicCard용
-        setRepMusic(data.repMusic || null);
-
-        // 🔥 Platform 버튼용
-        setPlatforms(data.platforms || []);
-      } catch (error) {
-        console.error(error);
+      if (!token || !targetUserId) {
+        console.warn('인증 정보나 대상 ID가 없습니다.');
+        return;
       }
-    };
 
-    fetchProfileData();
-  }, []); // 홈 들어올 때 한 번 실행
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+
+      const res = await GetProfile(targetUserId, token, year, month);
+      console.log('프로필 서버 응답:', res);
+      const data = res.data || res;
+      // ProfileCard용
+      setProfile({
+        nickname: data.nickname,
+        profileImage: data.profileImage,
+        bio: data.bio,
+      });
+
+      // MusicCard용
+      setRepMusic(data.repMusic || null);
+
+      // Platform 버튼용
+      setPlatforms(data.platforms || []);
+    } catch (error) {
+      console.error('데이털 로딩 실패: ', error);
+    }
+  }, [targetUserId]);
+
+  useEffect(() => {
+    fetchProfileData(); //서버값
+  }, [fetchProfileData]);
 
   return (
     <div style={styles.container}>
@@ -108,8 +145,19 @@ export default function Island() {
         <div style={styles.leftSection}>
           {/* 상단: 프로필 + 음악 카드 */}
           <div style={styles.topCards}>
-            <ProfileCard profile={profile} setProfile={setProfile} />
-            <MusicCard repMusic={repMusic} platforms={platforms} />
+            <ProfileCard
+              profile={profile}
+              setProfile={setProfile}
+              isEditable={isMyIsland}
+            />
+
+            <MusicCard
+              repMusic={repMusic}
+              platforms={platforms}
+              // 자식에게 부모의 로직(함수)을 통째로 넘깁니다.
+              handleAddPlatform={handleAddPlatform}
+              onAddPlatform={isMyIsland ? handleAddPlatform : null}
+            />
           </div>
 
           {/* 하단: 캘린더 */}

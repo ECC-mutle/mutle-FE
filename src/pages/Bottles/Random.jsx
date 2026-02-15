@@ -1,5 +1,5 @@
 // src/pages/Bottles/Random.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Header from '../../components/Header/Header';
@@ -130,10 +130,13 @@ export default function RandomPage() {
   const [viewMode, setViewMode] = useState('list');
   const [bottle, setBottle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const hasCalled = useRef(false);
 
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+    if (hasCalled.current) return;
+
     const fetchBottle = async () => {
       try {
         setLoading(true);

@@ -6,8 +6,8 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 //@param {object} params - { type(필수), email, userId }
 export const SearchFriends = async (token, searchParams) => {
   try {
-    const response = await axios.get('/api/friends/search', {
-      Headers: { Authorization: `Bearer ${token}` },
+    const response = await axios.get(`${API_BASE_URL}/api/friends/search`, {
+      headers: { Authorization: `Bearer ${token}` },
       params: {
         type: searchParams.type,
         email: searchParams.email,
@@ -27,7 +27,7 @@ export const RequestFriend = async (token, targetId) => {
   try {
     const response = await axios.post('/api/friends/request', {
       targetId: targetId,
-      Headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
@@ -83,7 +83,7 @@ export const HandleFriendRequest = async (token, requestId, status) => {
 //친구 목록 조회
 export const GetFriendList = async (token) => {
   try {
-    const response = await axios.get('/api/friends', {
+    const response = await axios.get(`${API_BASE_URL}/api/friends`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

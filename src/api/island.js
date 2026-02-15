@@ -5,7 +5,7 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 //프로필 조회
 export const GetProfile = async (userId, token, year, month) => {
   try {
-    const response = await axios.get(`/api/island/${userId}`, {
+    const response = await axios.get(`${API_BASE_URL}/api/island/${userId}`, {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
     });

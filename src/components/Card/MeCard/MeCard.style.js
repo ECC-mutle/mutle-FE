@@ -29,3 +29,14 @@ export const SettingList = styled.div`
   flex-direction: column;
   gap: 16px;
 `;
+export const Rightmenu = styled.div`
+    width: '350px',
+    flexShrink: 0
+`;
+
+export const LeftSection = styled.div`
+   flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+`;

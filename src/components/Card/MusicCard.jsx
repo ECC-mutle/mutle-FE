@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function MusicCard({ repMusic, platforms, onEdit }) {
+export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
   // repMusic: { trackName, artistName, artworkUrl60 } 또는 null
   const trackName = repMusic?.trackName || '곡 없음';
   const artistName = repMusic?.artistName || '아티스트 없음';
@@ -12,33 +12,24 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
   const [newPlatformName, setNewPlatformName] = useState('');
   const [newPlatformNickname, setNewPlatformNickname] = useState('');
 
-  const handleAddPlatform = async () => {
-    try {
-      const token = localStorage.getItem('token');
-
-      const newPlatform = [
-        {
-          platformName: newPlatformName.toUpperCase(),
-          platformNickname: newPlatformNickname,
-        },
-      ];
-
-      // 기존 덮어쓰기 (의도된 동작)
-      await UpdatePlatform(newPlatform, token);
-
-      // 다시 전체 조회
-      await fetchProfileData();
-
-      // 프론트 state 즉시 업데이트
-      setPlatforms(newPlatform);
-
-      // 입력창 닫기 + 초기화
-      setShowPlatformInput(false);
-      setNewPlatformName('');
-      setNewPlatformNickname('');
-    } catch (error) {
-      console.error('플랫폼 추가 실패:', error);
+  // ✅ 수정을 위해 기존 데이터를 input에 채우고 창을 여는 함수
+  const handleEditClick = () => {
+    if (platforms && platforms.length > 0) {
+      setNewPlatformName(platforms[0].platformName);
+      setNewPlatformNickname(platforms[0].platformNickname);
+      setShowPlatformInput(true);
     }
+  };
+
+  // 2. 자식 내부의 전용 핸들러 (입력값 전달용)
+  const onConfirm = async () => {
+    // 부모가 내려준 함수를 호출하며 입력값 두 개를 전달
+    await handleAddPlatform(newPlatformName, newPlatformNickname);
+
+    // 성공 후 입력창 닫기 및 초기화
+    setShowPlatformInput(false);
+    setNewPlatformName('');
+    setNewPlatformNickname('');
   };
 
   return (
@@ -65,7 +56,8 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
       {/* 🔗 플랫폼 버튼 */}
       <div style={styles.buttonGroup}>
         {platforms && platforms.length > 0 ? (
-          <button style={styles.platformButton}>
+          /* 버튼을 누르면 handleEditClick 실행 */
+          <button style={styles.platformButton} onClick={handleEditClick}>
             {platforms[0].platformName} · {platforms[0].platformNickname}
           </button>
         ) : (
@@ -78,6 +70,7 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
         )}
       </div>
 
+      {/* 입력창 영역 */}
       {showPlatformInput && (
         <div style={styles.inputBox}>
           <input
@@ -90,7 +83,9 @@ export default function MusicCard({ repMusic, platforms, onEdit }) {
             value={newPlatformNickname}
             onChange={(e) => setNewPlatformNickname(e.target.value)}
           />
-          <button onClick={handleAddPlatform}>추가</button>
+          <button onClick={onConfirm}>
+            {platforms && platforms.length > 0 ? '수정 완료' : '추가'}
+          </button>
           <button onClick={() => setShowPlatformInput(false)}>취소</button>
         </div>
       )}
