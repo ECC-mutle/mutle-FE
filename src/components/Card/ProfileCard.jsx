@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UpdateBio } from '../../api/island';
 
 const styles = {
@@ -27,19 +27,19 @@ const styles = {
 };
 
 export default function ProfileCard({ profile, setProfile }) {
-  {
-    /**아무것도 없을 때 표시될 값 지정 */
-  }
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [bioText, setBioText] = useState(profile?.bio || '아직 소개가 없어요');
+  const bioDefaultText = '아직 소개가 없어요';
+  const bio = profile?.bio ?? bioDefaultText;
   const nickname = profile?.nickname || '이름 없음';
   const profileImage = profile?.profileImage || ' ';
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputBio, setInputBio] = useState(''); // 기본값으로 빈 문자열 전달
 
-  const handleCancel = () => {
-    setBioText(profile?.bio || '아직 소개가 없어요'); // profile의 원본 값으로 복원
-    setIsEditing(false);
-  };
+  // 비동기로 받아오는 데이터를 input 초기값으로 쓸 때는 useState('') + useEffect 조합으로 진행
+  // const [inputBio, setInputBio] = useState(bio);는 bio가 렌더링 전에 이미 확정된 경우에만 안전하게 사용 가능
+  useEffect(() => {
+    setInputBio(profile?.bio ?? '');
+  }, [profile?.bio]);
+
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -49,13 +49,13 @@ export default function ProfileCard({ profile, setProfile }) {
         return;
       }
 
-      await UpdateBio(bioText, token);
+      await UpdateBio(inputBio, token);
 
       setIsEditing(false);
 
       setProfile((prev) => ({
         ...(prev || {}),
-        bio: bioText,
+        bio: inputBio,
       }));
     } catch (error) {
       console.log(error.response?.data);
@@ -74,17 +74,17 @@ export default function ProfileCard({ profile, setProfile }) {
       {isEditing ? (
         <>
           <textarea
-            value={bioText}
-            onChange={(e) => setBioText(e.target.value)}
+            value={inputBio}
+            onChange={(e) => setInputBio(e.target.value)}
             rows={3}
             style={{ width: '100%' }}
           />
           <button onClick={handleSave}>저장</button>
-          <button onClick={handleCancel}>취소</button>
+          <button onClick={() => setIsEditing(false)}>취소</button>
         </>
       ) : (
         <>
-          <p style={styles.bio}>{bioText}</p>
+          <p style={styles.bio}>{bio}</p>
           <button onClick={() => setIsEditing(true)}>수정</button>
         </>
       )}

@@ -24,6 +24,8 @@ export default function LoginPage() {
       const result = await Login(userId, password);
       if (result) {
         localStorage.setItem('token', result.data.accessToken);
+        localStorage.setItem('userId', result.data.userId);
+        console.log('결과값:', result);
         setStep(3);
       }
     } catch (error) {

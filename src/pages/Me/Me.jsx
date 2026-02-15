@@ -39,10 +39,10 @@ export default function Me() {
         >
           <MeCard />
         </div>
-        {/* 오른쪽: MenuCard - 고정 너비 */}
+        {/* 오른쪽: MenuCard - 고정 너비 350px*/}
         <div
           style={{
-            width: '280px',
+            width: '350px',
             flexShrink: 0,
           }}
         >
