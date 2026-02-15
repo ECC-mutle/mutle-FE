@@ -1,10 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import SettingItem from './SettingItem';
-import { Card, Header, Title, SettingList } from './MeCard.style';
+import { Card, Header, SettingList } from './MeCard.style';
 import ConfirmModal from '../../Modal/ConfirmModal';
 import PasswordChangeModal from '../../Modal/PasswordModal';
 import { Withdraw, Logout, UpdatePassword } from '../../../api/auth';
+import MenuCard from '../../Card/MenuCard';
+
+const styles = {
+  mainContent: {
+    flex: 1,
+    display: 'flex',
+    gap: '20px',
+    minHeight: 0,
+  },
+  leftSection: {
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  rightMenu: {
+    width: '350px',
+    flexShrink: 0,
+  },
+};
 
 export default function MeCard() {
   const navigate = useNavigate();
@@ -67,16 +86,12 @@ export default function MeCard() {
   return (
     <Card>
       <Header>환경설정</Header>
+
       <SettingList>
         <SettingItem
-          title='계정 정보'
-          description='나의 계정 정보를 확인합니다'
-          onClick={() => console.log('프로필 확인')}
-        />
-        <SettingItem
-          title='프로필 수정'
-          description='닉네임, 프로필 사진을 변경합니다'
-          onClick={() => console.log('프로필 수정')}
+          title='계정 정보 확인 및 수정'
+          description='계정 정보를 확인하고 수정합니다'
+          onClick={() => navigate('/accountinfo')}
         />
 
         <SettingItem

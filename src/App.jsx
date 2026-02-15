@@ -14,6 +14,7 @@ import BottlesPage from './pages/Bottles/Bottles';
 import BookmarksPage from './pages/Bottles/Bookmarks';
 import KakaoCallback from './pages/KakaoCallback';
 import GoogleCallback from './pages/GoogleCallBack';
+import AccountPage from './pages/AccountInfo';
 
 import SearchMusicPage from './pages/SearchMusic';
 import SearchMusicPage_island from './pages/SearchMusic_island';
@@ -63,6 +64,7 @@ function App() {
           path='/search-music-island'
           element={<SearchMusicPage_island />}
         />
+        <Route path='/accountinfo' element={<AccountPage />} />
       </Routes>
     </BrowserRouter>
   );
