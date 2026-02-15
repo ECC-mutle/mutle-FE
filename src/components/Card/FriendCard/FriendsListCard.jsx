@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import FriendItem from './FriendItem';
+import NotFriendItem from './NotFriendItem';
 import { GetFriendList, SearchFriends } from '../../../api/friends';
 
 import {
@@ -74,7 +75,7 @@ export default function FriendsListCard() {
         userId: searchId,
       });
 
-      setSearchResult(res.data);
+      setSearchResult(result.data);
     } catch (e) {
       console.error(e);
       alert('검색 실패');
@@ -112,7 +113,7 @@ export default function FriendsListCard() {
       {isSearching && searchResult && (
         <>
           <ResultBox>'{searchId}' 검색 결과</ResultBox>
-          <FriendItem friend={searchResult} isSearchResult />
+          <NotFriendItem friend={searchResult} isSearchResult />
         </>
       )}
 

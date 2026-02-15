@@ -261,7 +261,7 @@ export default function BottlesPage() {
                 disabled={loading}
                 style={{
                   padding: '10px 20px',
-                  backgroundColor: '#ffffff',
+                  backgroundColor: '#e02727',
                   border: 'none',
                   borderRadius: '20px',
                   color: 'white',
