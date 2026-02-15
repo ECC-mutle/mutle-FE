@@ -5,7 +5,7 @@ import MusicCard from '../components/Card/MusicCard';
 import CalendarCard from '../components/Card/CalendarCard';
 import MenuCard from '../components/Card/MenuCard';
 import NavigateCard from '../components/Card/NavigateCard';
-import { GetProfile, UpdatePlatform } from '../api/island';
+import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../api/island';
 import { useLocation } from 'react-router-dom';
 
 // 스타일 객체 분리
@@ -125,6 +125,37 @@ export default function Island() {
   useEffect(() => {
     fetchProfileData(); //서버값
   }, []);
+
+  useEffect(() => {
+    const updateSelectedMusic = async () => {
+      const selectedMusic = location.state?.selectedMusic;
+
+      if (selectedMusic) {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+
+          await UpdateRepMusic(
+            {
+              trackName: selectedMusic.trackName,
+              artistName: selectedMusic.artistName,
+              artworkUrl60: selectedMusic.artworkUrl60,
+            },
+            token,
+          );
+
+          await fetchProfileData();
+
+          window.history.replaceState({}, document.title);
+        } catch (error) {
+          console.error('음악 업데이트 실패:', error);
+          alert('음악을 저장하지 못했습니다.');
+        }
+      }
+    };
+
+    updateSelectedMusic();
+  }, [location.state]);
 
   return (
     <div style={styles.container}>
