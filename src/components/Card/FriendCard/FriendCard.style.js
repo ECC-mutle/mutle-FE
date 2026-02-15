@@ -117,3 +117,10 @@ export const Button = styled.button`
   color: white;
   background: ${(p) => (p.danger ? '#ef4444' : '#1f2937')};
 `;
+
+export const RightSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+`;
