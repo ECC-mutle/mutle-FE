@@ -25,10 +25,11 @@ export const SearchFriends = async (token, searchParams) => {
 //@param {number} targetId - 상대방 유저 ID
 export const RequestFriend = async (token, targetId) => {
   try {
-    const response = await axios.post('/api/friends/request', {
-      targetId: targetId,
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/api/friends/request`,
+      { targetId: targetId },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
     return response.data;
   } catch (error) {
     console.error('친구 신청 에러', error);
@@ -54,7 +55,7 @@ export const CancelFriendRequest = async (token, requestId) => {
 export const GetRecivedRequests = async (token) => {
   try {
     const response = await axios.get('/api/friends/requests/received', {
-      Headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
@@ -96,9 +97,12 @@ export const GetFriendList = async (token) => {
 //친구 삭제
 export const DelteFriend = async (token, requestId) => {
   try {
-    const response = await axios.delete(`/api/friends/requests/${requestId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/friends/${requestId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     return response.data;
   } catch (error) {
     console.error('친구 삭제 실패 ', error);
