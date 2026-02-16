@@ -5,10 +5,10 @@ import MusicCard from '../components/Card/MusicCard';
 import CalendarCard from '../components/Card/CalendarCard';
 import MenuCard from '../components/Card/MenuCard';
 import NavigateCard from '../components/Card/NavigateCard';
-import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../api/island';
-import { RequestFriend } from '../api/friends';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { GetProfile, UpdatePlatform } from '../api/island';
+import { useLocation, useParams } from 'react-router-dom';
 
+// 스타일 객체 분리
 const styles = {
   container: {
     height: '100vh',
@@ -44,30 +44,6 @@ const styles = {
     width: '350px',
     flexShrink: 0,
   },
-  buttonGroup: {
-    display: 'flex',
-    gap: '12px',
-    marginTop: '15px',
-    justifyContent: 'center',
-  },
-  backButton: {
-    padding: '10px 24px',
-    backgroundColor: '#666',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '600',
-  },
-  followButton: {
-    padding: '10px 24px',
-    backgroundColor: '#4A90E2',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '600',
-  },
 };
 
 export default function Island() {
@@ -77,25 +53,10 @@ export default function Island() {
   const [musicCalendar, setMusicCalendar] = useState([]);
   const location = useLocation();
   const { userId: urlUserId } = useParams();
-  const [isFriend, setIsFriend] = useState(false); //친구 상태 확인용
-  const navigate = useNavigate();
 
   const myUserId = localStorage.getItem('userId');
-  const targetId = urlUserId || myUserId;
+  const targetUserId = urlUserId || myUserId;
   const isMyIsland = !urlUserId || urlUserId === myUserId;
-
-  const handleFollow = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      console.log('신청 대상 ID:', targetId);
-
-      await RequestFriend(token, targetId);
-      alert('친구 요청을 보냈습니다!');
-      setIsFriend(true); // 임시로 상태 변경 (실제론 서버 응답 후 처리 권장)
-    } catch (error) {
-      console.error('친구 추가 실패:', error);
-    }
-  };
 
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
     try {
@@ -132,35 +93,13 @@ export default function Island() {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const saveSelectedMusic = async () => {
-      if (location.state?.selectedMusic) {
-        const token = localStorage.getItem('token');
-        try {
-          // 1. 서버에 선택한 음악 저장 요청
-          await UpdateRepMusic(location.state.selectedMusic, token);
-
-          // 2. 서버 저장 성공 후 UI 업데이트
-          setRepMusic(location.state.selectedMusic);
-
-          // 3. (선택) 처리가 끝났으므로 location state 비우기 (중복 저장 방지)
-          window.history.replaceState({}, document.title);
-        } catch (error) {
-          console.error('음악 업데이트 실패:', error);
-          alert('음악 저장에 실패했습니다.');
-        }
-      }
-    };
-
-    saveSelectedMusic();
-  }, [location.state]);
-
   const fetchProfileData = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
+      console.log('token', localStorage.getItem('token'));
       console.log('userId', localStorage.getItem('userId'));
 
-      if (!token || !targetId) {
+      if (!token || !targetUserId) {
         console.warn('인증 정보나 대상 ID가 없습니다.');
         return;
       }
@@ -169,7 +108,7 @@ export default function Island() {
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
 
-      const res = await GetProfile(targetId, token, year, month);
+      const res = await GetProfile(targetUserId, token, year, month);
       console.log('프로필 서버 응답:', res);
       const data = res.data || res;
       // ProfileCard용
@@ -180,43 +119,20 @@ export default function Island() {
       });
 
       // MusicCard용
-      setRepMusic(data.repMusic);
+      setRepMusic(data.repMusic || null);
       // Calendar용
       setMusicCalendar(data.calendars || []);
+
       // Platform 버튼용
       setPlatforms(data.platforms || []);
-      setIsFriend(data.friend);
     } catch (error) {
-      console.error('데이터 로딩 실패: ', error);
+      console.error('데이털 로딩 실패: ', error);
     }
-  }, [targetId]);
+  }, [targetUserId]);
 
   useEffect(() => {
-    const syncSelectedMusic = async () => {
-      // 1. 선택된 음악이 있을 때만 실행
-      if (location.state?.selectedMusic) {
-        const token = localStorage.getItem('token');
-        try {
-          // 2. 서버에 먼저 저장 (가장 중요)
-          await UpdateRepMusic(location.state.selectedMusic, token);
-
-          // 3. 저장 성공 후에 서버에서 최신 데이터를 다시 불러옴 (데이터 싱크 맞추기)
-          await fetchProfileData();
-
-          // 4. 처리가 끝났으므로 URL 상태에서 music 데이터 제거 (새로고침 시 중복 방지)
-          window.history.replaceState({}, document.title);
-        } catch (error) {
-          console.error('음악 저장 실패:', error);
-          alert('음악 수정 내용을 저장하지 못했습니다.');
-        }
-      } else {
-        // 선택된 음악이 없는 평상시에는 데이터만 조회
-        fetchProfileData();
-      }
-    };
-
-    syncSelectedMusic();
-  }, [location.state, fetchProfileData]);
+    fetchProfileData(); //서버값
+  }, [fetchProfileData]);
 
   return (
     <div style={styles.container}>
@@ -247,23 +163,7 @@ export default function Island() {
           </div>
 
           {/* 하단: 캘린더 */}
-          <CalendarCard
-            calendarData={musicCalendar}
-            isClickable={isMyIsland || isFriend}
-          />
-
-          {!isMyIsland && (
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-              <button onClick={() => navigate(-1)} style={styles.backButton}>
-                뒤로가기
-              </button>
-              {!isFriend && (
-                <button onClick={handleFollow} style={styles.followButton}>
-                  친구 추가
-                </button>
-              )}
-            </div>
-          )}
+          <CalendarCard calendarData={musicCalendar} />
         </div>
 
         {/* 오른쪽: 메뉴 */}

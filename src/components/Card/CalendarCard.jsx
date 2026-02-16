@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function CalendarCard({ calendarData = [], isClickable }) {
+export default function CalendarCard({ calendarData = [] }) {
   const navigate = useNavigate();
 
   // 1. 시작일을 무조건 이번 달로 설정
@@ -62,13 +62,7 @@ export default function CalendarCard({ calendarData = [], isClickable }) {
     setSelectedDate(day);
 
     if (bottleInfo?.bottleId) {
-      if (isClickable) {
-        // '나'이거나 '친구'인 경우 -> 상세 페이지로 이동
-        navigate(`/bottles/${bottleInfo.bottleId}`);
-      } else {
-        // 친구가 아닌 경우 -> 알림창
-        alert('친구가 되어야 유리병 속 이야기를 볼 수 있어요! 🏝️');
-      }
+      navigate(`/bottles/${bottleInfo.bottleId}`);
     }
   };
 
@@ -122,10 +116,7 @@ export default function CalendarCard({ calendarData = [], isClickable }) {
                       <img
                         src={bottleInfo.artworkUrl60}
                         alt='album'
-                        style={{
-                          ...styles.albumArt,
-                          filter: isClickable ? 'none' : 'grayscale(0.5)',
-                        }}
+                        style={styles.albumArt}
                       />
                     </div>
                   )}

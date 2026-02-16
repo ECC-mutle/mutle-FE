@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import FriendItem from './FriendItem';
 import NotFriendItem from './NotFriendItem';
-import {
-  GetFriendList,
-  SearchFriends,
-  DelteFriend,
-} from '../../../api/friends';
+import { GetFriendList, SearchFriends } from '../../../api/friends';
 
 import {
   Card,
@@ -48,36 +44,22 @@ export default function FriendsListCard() {
   ]
 }*/
   }
-
-  //친구 삭제 처리 함수
-  const handleDeleteFriend = async (friendId) => {
-    if (!token) return;
-
-    try {
-      await DelteFriend(token, friendId);
-      alert('친구 삭제가 완료되었습니다.');
-      fetchFriends(); // 목록 새로고침
-    } catch (e) {
-      alert('친구 삭제에 실패했습니다.');
-    }
-  };
-
-  const fetchFriends = async () => {
-    if (!token) return;
-
-    try {
-      setLoading(true);
-      const res = await GetFriendList(token);
-      setFriends(res.data || []);
-    } catch (e) {
-      console.error('친구 목록 로딩 실패:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchFriends();
+    if (!token) return;
+
+    const fetchFriends = async (token) => {
+      try {
+        setLoading(true);
+        const res = await GetFriendList(token);
+        setFriends(res.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFriends(token);
   }, [token]);
 
   // 친구 검색
@@ -139,6 +121,7 @@ export default function FriendsListCard() {
       {loading && <p>로딩 중...</p>}
 
       <List>
+        {/* CASE 1: 검색 결과 표시 */}
         {isSearching && searchResult ? (
           <>
             <ResultBox>'{searchuserId}' 의 검색 결과입니다.</ResultBox>
@@ -150,12 +133,8 @@ export default function FriendsListCard() {
           !isSearching &&
           friends.map((friend) => (
             <FriendItem
-              key={friend.userId}
+              key={friend.userid}
               friend={friend}
-              onDelete={() => {
-                console.log('삭제하려는 ID:', friend.userId);
-                handleDeleteFriend(friend.userId);
-              }}
               // 친구 목록에서는 '방문하기'와 '친구 삭제' 버튼이 모두 필요함
             />
           ))
