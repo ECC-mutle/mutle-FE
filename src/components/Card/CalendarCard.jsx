@@ -138,8 +138,8 @@ const styles = {
     padding: '20px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
     width: '100%',
-    maxWidth: '400px',
-    margin: '0 auto',
+    maxWidth: 'none',
+    margin: '0',
   },
   header: {
     display: 'flex',

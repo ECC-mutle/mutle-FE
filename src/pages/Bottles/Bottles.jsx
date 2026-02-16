@@ -173,15 +173,15 @@ export default function BottlesPage() {
       // 1. 유리병 전송 API 호출
       await SendBottle(token, bottleData);
 
-      // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옵니다.
-      // 이 작업이 수행되어야 musicCalendar에 방금 보낸 병이 추가됩니다.
+      // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옴
+      // musicCalendar에 방금 보낸 병 추가하는 작업
       if (typeof fetchProfileData === 'function') {
         await fetchProfileData();
       }
       setStep(isPublic ? 3 : 4);
     } catch (error) {
       console.error('전송 에러 상세:', error.response);
-      alert('전송에 실패했습니다. 다시 시도해주세요.');
+      alert('오늘 이미 유리병을 작성했습니다.');
     } finally {
       setLoading(false);
     }
@@ -306,7 +306,7 @@ export default function BottlesPage() {
               유리병을 성공적으로 전송했어요!
             </div>
             <button
-              onClick={() => navigate('/Me')}
+              onClick={() => navigate('/island')}
               style={{
                 backgroundColor: '#A2D2FF',
                 color: 'white',
@@ -346,7 +346,7 @@ export default function BottlesPage() {
               유리병이 성공적으로 저장되었어요!
             </div>
             <button
-              onClick={() => navigate('/Me')}
+              onClick={() => navigate('/island')}
               style={{
                 backgroundColor: '#A2D2FF',
                 color: 'white',

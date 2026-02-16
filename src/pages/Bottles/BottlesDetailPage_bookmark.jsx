@@ -70,7 +70,7 @@ export default function BottlesDetailPage_bookmark() {
         <SectionTitle>남긴 메모</SectionTitle>
         <MemoBox>{bottle.memo || '작성된 메모가 없습니다.'}</MemoBox>
 
-        <BackButton onClick={() => navigate(-1)}>뒤로가기</BackButton>
+        <BackButton onClick={() => navigate('/island')}>뒤로가기</BackButton>
         <BackButton onClick={handleVisit}>섬 방문하기</BackButton>
       </Card>
     </Container>

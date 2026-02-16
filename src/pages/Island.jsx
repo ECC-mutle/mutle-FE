@@ -17,6 +17,7 @@ const styles = {
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: '#A2D2FF',
   },
   navigateWrapper: {
     flexShrink: 0,
@@ -45,7 +46,6 @@ const styles = {
     flexShrink: 0,
   },
 };
-
 export default function Island() {
   const [profile, setProfile] = useState(null);
   const [repMusic, setRepMusic] = useState(null);
@@ -61,13 +61,17 @@ export default function Island() {
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
     try {
       const token = localStorage.getItem('token');
-
+      const formattedName = newPlatformName.replace(/\s+/g, '_').toUpperCase();
       const newPlatform = [
         {
-          platformName: newPlatformName.toUpperCase(),
+          platformName: formattedName,
           platformNickname: newPlatformNickname,
         },
       ];
+      console.log(
+        '🚀 [Step 1] 전송 데이터 확인:',
+        JSON.stringify(newPlatform, null, 2),
+      );
 
       // 기존 덮어쓰기 (의도된 동작)
       await UpdatePlatform(newPlatform, token);
@@ -126,7 +130,7 @@ export default function Island() {
       // Platform 버튼용
       setPlatforms(data.platforms || []);
     } catch (error) {
-      console.error('데이털 로딩 실패: ', error);
+      console.error('데이터 로딩 실패: ', error);
     }
   }, [targetUserId]);
 
