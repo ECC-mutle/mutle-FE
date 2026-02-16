@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UpdateBio } from '../../api/island';
+import defaultProfile from '../../assets/images/defaultProfile.png';
 
 const styles = {
   card: {
@@ -65,11 +66,19 @@ export default function ProfileCard({ profile, setProfile }) {
 
   return (
     <div style={styles.card}>
-      <div style={styles.header}></div>
+      {/* 프로필사진 영역*/}
+      <div style={styles.imageContainer}>
+        <img
+          src={profileImage}
+          alt='프로필'
+          style={styles.profileImg}
+          onError={(e) => {
+            e.target.src = defaultProfile;
+          }}
+        />
+      </div>
       {/* 닉네임 영역 */}
       <div style={styles.nickname}>{nickname}</div>
-      {/* 프로필사진 영역 */}
-      <div style={styles.nickname}>{profileImage}</div>
       {/* Bio 영역 */}
       {isEditing ? (
         <>

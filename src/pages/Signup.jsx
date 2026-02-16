@@ -116,6 +116,7 @@ export default function SignupPage() {
       if (selectedFile) {
         const uploadResult = await UploadImage(selectedFile);
         // API 응답 명세서의 예시가 { data: "string" } 이었으므로 uploadResult.data를 저장
+
         finalProfileImageUrl = uploadResult.data;
       }
 
@@ -168,14 +169,14 @@ export default function SignupPage() {
             <Input
               name='password'
               type='password'
-              placeholder='비밀번호 입력'
+              placeholder='비밀번호를 8~16자 영문, 숫자, 특수문자 조합으로 입력하세요.'
               value={formData.password}
               onChange={handleChange}
             />
             <Input
               name='confirmPassword'
               type='password'
-              placeholder='비밀번호 확인'
+              placeholder='비밀번호를 8~16자 영문, 숫자, 특수문자 조합으로 입력하세요.'
               value={formData.confirmPassword}
               onChange={handleChange}
             />
