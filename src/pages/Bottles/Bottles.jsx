@@ -266,6 +266,7 @@ export default function BottlesPage() {
     } catch (error) {
       console.error('전송 에러 상세:', error.response);
       alert('오늘 이미 유리병을 작성했습니다.');
+      navigate('/island');
     } finally {
       setLoading(false);
     }
@@ -285,7 +286,7 @@ export default function BottlesPage() {
             <ActionText> 유리병 클릭하여 작성</ActionText>
 
             <Link
-              to='/Me'
+              to='/island'
               style={{
                 position: 'absolute',
                 bottom: '40px',
