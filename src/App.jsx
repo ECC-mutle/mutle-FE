@@ -48,33 +48,35 @@ const Background = styled.div`
 }
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<OnboardingPage />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/kakao-callback' element={<KakaoCallback />} />
-        <Route path='/google-callback' element={<GoogleCallback />} />
-        <Route path='/signup' element={<SignupPage />} />
-        <Route path='/bottles/bottles' element={<BottlesPage />} />
-        <Route path='/search-music' element={<SearchMusicPage />} />
-        <Route path='/me' element={<Me />} />
-        <Route path='/random' element={<RandomPage />} />
-        <Route path='/island' element={<Island />} />
-        <Route path='/island/:userId' element={<Island />} />
-        <Route path='/friends' element={<Friends />} />
-        <Route path='/bookmarks' element={<BookmarksPage />} />
-        <Route
-          path='/search-music-island'
-          element={<SearchMusicPage_island />}
-        />
-        <Route path='/accountinfo' element={<AccountPage />} />
-        <Route
-          path='/bookmarkbottles/:bottleId'
-          element={<BottlesDetailPage_bookmark />}
-        />
-        <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Background>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<OnboardingPage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/kakao-callback' element={<KakaoCallback />} />
+          <Route path='/google-callback' element={<GoogleCallback />} />
+          <Route path='/signup' element={<SignupPage />} />
+          <Route path='/bottles/bottles' element={<BottlesPage />} />
+          <Route path='/search-music' element={<SearchMusicPage />} />
+          <Route path='/me' element={<Me />} />
+          <Route path='/random' element={<RandomPage />} />
+          <Route path='/island' element={<Island />} />
+          <Route path='/island/:userId' element={<Island />} />
+          <Route path='/friends' element={<Friends />} />
+          <Route path='/bookmarks' element={<BookmarksPage />} />
+          <Route
+            path='/search-music-island'
+            element={<SearchMusicPage_island />}
+          />
+          <Route path='/accountinfo' element={<AccountPage />} />
+          <Route
+            path='/bookmarkbottles/:bottleId'
+            element={<BottlesDetailPage_bookmark />}
+          />
+          <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Background>
   );
 }
 export default App;
