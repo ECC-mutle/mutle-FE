@@ -3,7 +3,7 @@ import './App.css';
 import styled from '@emotion/styled';
 import BackgroundImage from './assets/images/BackgroundPic.png';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Island from './pages/Island';
+import Island from './pages/island/Island';
 import Friends from './pages/Friends';
 import Me from './pages/Me/Me';
 import OnboardingPage from './pages/Onboarding';
@@ -48,8 +48,8 @@ const Background = styled.div`
 }
 function App() {
   return (
-    <Background>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Background>
         <Routes>
           <Route path='/' element={<OnboardingPage />} />
           <Route path='/login' element={<LoginPage />} />
@@ -75,8 +75,8 @@ function App() {
           />
           <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
         </Routes>
-      </BrowserRouter>
-    </Background>
+      </Background>
+    </BrowserRouter>
   );
 }
 export default App;

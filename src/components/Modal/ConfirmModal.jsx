@@ -1,6 +1,7 @@
 // components/modal/ConfirmModal.jsx
 
 import { useState } from 'react';
+import { BaseButton } from '../Button/styled';
 import {
   Overlay,
   ModalBox,
@@ -49,15 +50,20 @@ export default function ConfirmModal({
         )}
 
         <ButtonRow>
-          <CancelButton onClick={onClose}>{cancelText}</CancelButton>
+          {/* 취소 버튼: secondary + lg */}
+          <BaseButton variant='secondary' size='lg' onClick={onClose}>
+            {cancelText}
+          </BaseButton>
 
-          <ConfirmButton
-            isDanger={isDanger}
+          {/* 확인 버튼: danger OR primary*/}
+          <BaseButton
+            variant={isDanger ? 'danger' : 'primary'}
+            size='lg'
             disabled={requireInput && !inputValue}
             onClick={handleConfirm}
           >
             {confirmText}
-          </ConfirmButton>
+          </BaseButton>
         </ButtonRow>
       </ModalBox>
     </Overlay>

@@ -21,7 +21,7 @@ export default function NavigateCard({
       <button onClick={() => navigate('/island')}>홈</button>
 
       {/* 버튼이 나타날 공간 */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         {requestCount > 0 && !isListView && (
           <button
             onClick={onToggleList}

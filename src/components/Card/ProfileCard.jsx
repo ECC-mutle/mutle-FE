@@ -4,18 +4,34 @@ import defaultProfile from '../../assets/images/defaultProfile.png';
 
 const styles = {
   card: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
+    backgroundColor: '#FAF9F8',
+    borderRadius: '20px',
     padding: '10px',
     boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
+    display: 'flex', // 가로 정렬의 핵심
+    padding: '20px',
+    flexDirection: 'row',
+    alignItems: 'center', // 세로 중앙 정렬
+    justifyContent: 'center',
+    gap: '20px',
   },
-  header: {
-    width: '128px',
-    height: '80px',
-    background: 'linear-gradient(to bottom right, #fb923c, #9333ea)',
-    borderRadius: '8px',
-    margin: '0 auto 16px',
+  profileImg: {
+    width: '150px', // 크기 키움
+    height: '150px', // 크기 키움
+    borderRadius: '12px', // 네모 느낌 (완전 네모는 0)
+    objectFit: 'cover',
+    border: '1px solid #eee',
   },
+  imageContainer: {
+    flexShrink: 0, // 이미지가 찌그러지지 않게 고정
+    padding: '20px',
+  },
+  infoContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
   nickname: {
     fontSize: '20px',
     fontWeight: 'bold',
@@ -69,34 +85,33 @@ export default function ProfileCard({ profile, setProfile }) {
       {/* 프로필사진 영역*/}
       <div style={styles.imageContainer}>
         <img
-          src={profileImage}
-          alt='프로필'
+          src={profile?.profileImage || defaultProfile}
           style={styles.profileImg}
-          onError={(e) => {
-            e.target.src = defaultProfile;
-          }}
+          alt='profile'
         />
       </div>
       {/* 닉네임 영역 */}
-      <div style={styles.nickname}>{nickname}</div>
-      {/* Bio 영역 */}
-      {isEditing ? (
-        <>
-          <textarea
-            value={inputBio}
-            onChange={(e) => setInputBio(e.target.value)}
-            rows={3}
-            style={{ width: '100%' }}
-          />
-          <button onClick={handleSave}>저장</button>
-          <button onClick={() => setIsEditing(false)}>취소</button>
-        </>
-      ) : (
-        <>
-          <p style={styles.bio}>{bio}</p>
-          <button onClick={() => setIsEditing(true)}>수정</button>
-        </>
-      )}
+      <div style={styles.infoContainer}>
+        <div style={styles.nickname}>{nickname}</div>
+        {/* Bio 영역 */}
+        {isEditing ? (
+          <>
+            <textarea
+              value={inputBio}
+              onChange={(e) => setInputBio(e.target.value)}
+              rows={3}
+              style={{ width: '100%' }}
+            />
+            <button onClick={handleSave}>저장</button>
+            <button onClick={() => setIsEditing(false)}>취소</button>
+          </>
+        ) : (
+          <>
+            <p style={styles.bio}>{bio}</p>
+            <button onClick={() => setIsEditing(true)}>수정</button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

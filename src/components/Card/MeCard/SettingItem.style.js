@@ -5,7 +5,7 @@ export const ItemButton = styled.button`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #f9fafb;
+  background-color: #ffffff;
   border-radius: 8px;
   border: none;
   cursor: pointer;

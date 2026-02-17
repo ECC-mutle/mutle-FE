@@ -1,5 +1,6 @@
 // PasswordChangeModal.jsx
 import { useState } from 'react';
+import { BaseButton } from '../Button/styled';
 import {
   Overlay,
   ModalBox,
@@ -65,10 +66,13 @@ export default function PasswordChangeModal({ onClose, onConfirm }) {
         )}
 
         <ButtonRow>
-          <CancelButton onClick={onClose}>취소</CancelButton>
-          <ConfirmButton disabled={!isValid} onClick={handleConfirm}>
+          {/* 취소 버튼: secondary + lg */}
+          <BaseButton variant='secondary' size='lg' onClick={onClose}>
+            취소
+          </BaseButton>
+          <BaseButton variant='primary' size='lg' onClick={handleConfirm}>
             변경하기
-          </ConfirmButton>
+          </BaseButton>
         </ButtonRow>
       </ModalBox>
     </Overlay>
