@@ -38,26 +38,33 @@ export const Input = styled.input`
   border-radius: 8px;
   border: 1px solid #d1d5db;
   margin-bottom: 20px;
+  box-sizing: border-box; /* 패딩 때문에 너비가 넘치지 않게 방지 */
 `;
 
 export const ButtonRow = styled.div`
   display: flex;
   gap: 8px;
+
+  /* ButtonRow 안에 들어오는 BaseButton들을 절반씩 차지하게 함 */
+  & > button {
+    flex: 1;
+  }
 `;
 
 export const CancelButton = styled.button`
   flex: 1;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 50px;
   border: none;
-  background-color: #e5e7eb;
+  color: '#4FABE9';
+  background-color: #ffffff;
   cursor: pointer;
 `;
 
 export const ConfirmButton = styled.button`
   flex: 1;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 50px;
   border: none;
   cursor: pointer;
   background-color: ${({ isDanger }) => (isDanger ? '#ef4444' : '#2563eb')};

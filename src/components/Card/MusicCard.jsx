@@ -21,6 +21,7 @@ const PLATFORM_LOGOS = {
   YOUTUBE_MUSIC: youtubeLogo,
   SOUNDCLOUD: soundcloudLogo,
 };
+
 export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
   // repMusic: { trackName, artistName, artworkUrl60 } 또는 null
   const trackName = repMusic?.trackName || '곡 없음';
@@ -58,6 +59,7 @@ export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
     const key = platformName?.replace(/\s+/g, '_').toUpperCase();
     return PLATFORM_LOGOS[key] || '🔗'; // 없으면 기본 아이콘
   };
+
   return (
     <div style={styles.card}>
       <div style={styles.topArea}></div>
@@ -177,18 +179,62 @@ export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
 const styles = {
   card: {
     backgroundColor: 'white',
-    borderRadius: '16px', // 더 둥글게
-    padding: '24px',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
+    borderRadius: '20px',
+    padding: '16px', // 전체 패딩 축소
+    boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
     width: '100%',
+    //maxWidth: '320px',
     boxSizing: 'border-box',
+    border: '1px solid #F0F0F0',
   },
   nowPlayingBox: {
-    border: '1px solid #eee', // 선을 더 연하게
     borderRadius: '12px',
-    padding: '16px',
+    padding: '12px',
+    marginBottom: '10px',
+    backgroundColor: '#FAF9F8',
+    border: '1px solid #E9ECEF',
+  },
+  title: {
+    fontSize: '20px',
+    fontWeight: '700',
+    color: '#333',
     marginBottom: '12px',
-    backgroundColor: '#fafafa',
+    textAlign: 'center',
+  },
+  musicRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+  },
+  albumArt: {
+    width: '100%', // 부모(albumWrapper) 너비에 꽉 맞춤
+    maxWidth: '100px', //  최대치 제한
+    aspectRatio: '1 / 1', // 정사각형 비율
+    height: 'auto', // 높이는 비율에 맞춰 자동으로
+    padding: '20px',
+    borderRadius: '15px',
+    objectFit: 'cover',
+  },
+  musicInfo: {
+    display: 'flex',
+    flexDirection: 'column', // 위아래 배치
+    gap: '30px',
+    flex: 1,
+    overflow: 'hidden', // 글자가 길어질 경우 대비
+  },
+  trackName: {
+    fontSize: '20px',
+    fontWeight: '600',
+    color: '#1A1A1A',
+    margin: 0,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  artistName: {
+    fontSize: '20px',
+    color: '#A1A1A1',
+    margin: 0,
   },
   editMusicBtn: {
     width: '100%',
@@ -202,29 +248,29 @@ const styles = {
   },
   platformButton: {
     width: '100%',
-    height: '80px', // 버튼 높이를 늘림
-    backgroundColor: '#111', // 검은색 배경 유지
+    height: '44px',
+    backgroundColor: '#000000',
     color: 'white',
-    borderRadius: '12px',
+    borderRadius: '22px', // 알약 모양
     border: 'none',
     cursor: 'pointer',
-    transition: 'transform 0.2s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   platformContent: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: '15px',
+    gap: '10px',
   },
   largeLogo: {
-    width: '40px', // 로고를 큼직하게
-    height: '40px',
+    width: '20px',
+    height: '20px',
     objectFit: 'contain',
-    borderRadius: '8px',
   },
   platformNickname: {
-    fontSize: '18px',
-    fontWeight: '600',
+    fontSize: '14px',
+    fontWeight: '500',
   },
   platformSelector: {
     display: 'grid',
@@ -253,5 +299,4 @@ const styles = {
     marginBottom: '12px',
     boxSizing: 'border-box',
   },
-  // ... (나머지 confirmBtn, cancelBtn 스타일은 기존과 동일)
 };

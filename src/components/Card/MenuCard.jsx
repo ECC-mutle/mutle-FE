@@ -5,7 +5,7 @@ export default function MenuCard() {
   return (
     <div
       style={{
-        backgroundColor: 'white',
+        backgroundColor: '#FAF9F8',
         borderRadius: '8px',
         padding: '24px',
         boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
@@ -57,21 +57,6 @@ export default function MenuCard() {
           }}
         >
           <span>≡ 받은 유리병 보기</span>
-          <span
-            style={{
-              backgroundColor: '#ef4444',
-              color: 'white',
-              borderRadius: '9999px',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px',
-            }}
-          >
-            1
-          </span>
         </button>
         <button
           onClick={() => navigate('/friends')}
@@ -89,14 +74,6 @@ export default function MenuCard() {
           }}
         >
           <span>≡ 친구 관리</span>
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              backgroundColor: '#ef4444',
-              borderRadius: '9999px',
-            }}
-          ></span>
         </button>
       </div>
     </div>

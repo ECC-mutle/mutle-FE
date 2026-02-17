@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Card = styled.div`
-  background-color: white;
+  background-color: #faf9f8;
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
@@ -12,9 +12,15 @@ export const Card = styled.div`
 `;
 
 export const Header = styled.div`
-  font-size: 16px;
-  color: #6b7280;
-  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+  width: 100%;
+  border-bottom: 2px solid #f4f4f4;
+  padding-bottom: 15px;
+  box-sizing: border-box;
 `;
 
 export const Title = styled.h2`
@@ -27,7 +33,7 @@ export const Title = styled.h2`
 export const SettingList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 `;
 export const Rightmenu = styled.div`
     width: '350px',

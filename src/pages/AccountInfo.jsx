@@ -1,8 +1,10 @@
-import { Card, Header } from '../components/Card/MeCard/MeCard.style';
+import { Card } from '../components/Card/MeCard/MeCard.style';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetMyInfo, UpdateMyInfo } from '../api/auth';
 import { UploadImage } from '../api/image';
+import MenuCard from '../components/Card/MenuCard';
+import Header from '../components/Header/Header';
 
 export default function AccountPage() {
   const [account, setAccount] = useState(null);
@@ -15,6 +17,58 @@ export default function AccountPage() {
     profileImage: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  const fullScreenStyle = {
+    width: '100vw', // 화면 너비 100%
+    height: '100vh', // 화면 높이 100%
+    margin: 0, // 기본 여백 제거
+    padding: '40px', // 내부 여백 (답답하지 않게)
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center', // 가로 중앙 정렬
+    borderRadius: 0,
+  };
+  const inputGroupStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  };
+  const labelStyle = { fontSize: '14px', fontWeight: 'bold', color: '#666' };
+  const inputStyle = {
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #ddd',
+    fontSize: '16px',
+  };
+  const saveButtonStyle = {
+    flex: 1,
+    padding: '15px',
+    background: '#4FABE9',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  };
+  const cancelButtonStyle = {
+    flex: 0.5,
+    padding: '15px',
+    background: '#eee',
+    border: 'none',
+    borderRadius: '50px',
+    cursor: 'pointer',
+  };
+  const titleStyle = {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: '30px',
+    textAlign: 'center',
+    width: '100%',
+    borderBottom: '2px solid #f4f4f4',
+    paddingBottom: '15px',
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,84 +176,126 @@ export default function AccountPage() {
   }
 
   return (
-    <Card>
-      <Header>계정 정보</Header>
-      {!isEditing ? (
-        <div>
-          {/* 렌더링 부분: 텍스트가 아닌 img 태그 사용 */}
-          <img
-            src={account.profileImage}
-            alt='프로필'
-            width='100'
-            style={{ borderRadius: '50%' }}
-          />
-          <p>아이디: {account.userId}</p>
-          <p>닉네임: {account.nickName}</p>
-          <button onClick={() => setIsEditing(true)}>정보 수정</button>
-        </div>
-      ) : (
-        // 편집 모드
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>프로필 사진 변경:</label>
-            {/* 텍스트 입력 대신 파일 선택 사용 */}
-            <input
-              type='file'
-              accept='image/*'
-              onChange={handleImageChange}
-              disabled={isLoading}
-            />
-            {formData.profileImage && (
-              <div style={{ marginTop: '10px' }}>
+    <div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        padding: '20px',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 상단 헤더 유지 */}
+      <Header />
+
+      {/*메인 레이아웃 */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '24px',
+          marginTop: '30px',
+          flex: 1,
+          minHeight: 0,
+        }}
+      >
+        {/* 왼쪽: 수정 폼 */}
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <Card
+            style={{
+              height: '1500px',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: '#FAF9F8',
+            }}
+          >
+            <div style={titleStyle}>계정 정보 수정</div>
+
+            <form
+              onSubmit={handleSubmit}
+              style={{ padding: '30px', overflowY: 'auto' }}
+            >
+              <div style={{ marginBottom: '25px', textAlign: 'center' }}>
                 <img
                   src={formData.profileImage}
-                  alt='미리보기'
-                  width='100'
-                  style={{ borderRadius: '50%' }}
+                  alt='프로필'
+                  style={{
+                    width: '200px',
+                    height: '200px',
+                    borderRadius: '12px',
+                    objectFit: 'cover',
+                    border: '1px solid #ddd',
+                  }}
                 />
-                <p style={{ fontSize: '12px' }}>새 이미지 미리보기</p>
+                <input
+                  type='file'
+                  onChange={handleImageChange}
+                  style={{ display: 'block', margin: '15px auto' }}
+                />
               </div>
-            )}
-          </div>
 
-          <div>
-            <label>아이디:</label>
-            <input
-              type='text'
-              name='userId'
-              value={formData.userId}
-              onChange={handleInputChange}
-            />
-          </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
+              >
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>아이디</label>
+                  <input
+                    style={inputStyle}
+                    name='userId'
+                    value={formData.userId}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>닉네임</label>
+                  <input
+                    style={inputStyle}
+                    name='nickname'
+                    value={formData.nickname}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div style={inputGroupStyle}>
+                  <label style={labelStyle}>이메일</label>
+                  <input
+                    style={inputStyle}
+                    name='email'
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
 
-          <div>
-            <label>닉네임:</label>
-            <input
-              type='text'
-              name='nickname'
-              value={formData.nickname}
-              onChange={handleInputChange}
-            />
-          </div>
+              <div style={{ marginTop: '40px', display: 'flex', gap: '12px' }}>
+                <button
+                  type='submit'
+                  disabled={isLoading}
+                  style={saveButtonStyle}
+                >
+                  {isLoading ? '저장 중...' : '변경사항 저장'}
+                </button>
+                <button
+                  type='button'
+                  onClick={() => navigate('/me')}
+                  style={cancelButtonStyle}
+                >
+                  취소
+                </button>
+              </div>
+            </form>
+          </Card>
+        </div>
 
-          <div>
-            <label>이메일:</label>
-            <input
-              type='email'
-              name='email'
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <button type='submit' disabled={isLoading}>
-            {isLoading ? '저장 중...' : '저장'}
-          </button>
-          <button type='button' onClick={handleCancel} disabled={isLoading}>
-            취소
-          </button>
-        </form>
-      )}
-    </Card>
+        {/* 오른쪽: MenuCard */}
+        <div style={{ width: '350px', flexShrink: 0 }}>
+          <MenuCard />
+        </div>
+      </div>
+    </div>
   );
 }
