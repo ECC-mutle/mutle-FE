@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input/Input';
-import Button from '../components/Button/Button';
 import Header from '../components/Header/Header';
 import styled from '@emotion/styled';
 import { CheckEmailDuplicate } from '../api/auth';
@@ -11,6 +10,77 @@ import { UploadImage } from '../api/image';
 
 import { Signup } from '../api/auth';
 
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+`;
+
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 900px;
+  height: 550px;
+  background-color: rgba(178, 235, 242, 0.7);
+  border-radius: 30px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: 20px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  background-color: #b2ebf2; /* 이미지의 입력창 배경색 */
+  border: 1px solid #757575;
+  border-radius: 40px; /* 아주 둥글게 */
+  padding: 5px 20px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+`;
+
+const Duplicateutton = styled.button`
+  background-color: #000; /* 검정색 버튼 */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-left: 10px;
+
+  &:disabled {
+    background-color: #555;
+  }
+`;
+
+const NextButton = styled.button`
+  background-color: #4fc3f7; /* 파란색 버튼 */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &:hover {
+    background-color: #29b6f6;
+  }
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -21,22 +91,18 @@ const Container = styled.div`
   text-align: center;
 `;
 
-const FormBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  max-width: 200px;
-  padding: 40px;
-  background-color: #6a88cd;
-  border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-`;
+const InputField = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 16px;
+  outline: none;
+  color: #333;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  &::placeholder {
+    color: #757575;
+  }
 `;
 
 export default function SignupPage() {
@@ -115,7 +181,6 @@ export default function SignupPage() {
       // 1. 선택된 파일이 있다면 먼저 업로드 진행
       if (selectedFile) {
         const uploadResult = await UploadImage(selectedFile);
-        // API 응답 명세서의 예시가 { data: "string" } 이었으므로 uploadResult.data를 저장
 
         finalProfileImageUrl = uploadResult.data;
       }
@@ -126,14 +191,14 @@ export default function SignupPage() {
         nickname: formData.nickname,
         password: formData.password,
         email: formData.email,
-        profileImage: finalProfileImageUrl, //url 주소도 string임!
+        profileImage: finalProfileImageUrl,
       };
 
       // 3. 회원가입 API 호출
       const result = await Signup(finalData);
 
       if (result) {
-        setStep(3); // 회원가입 완료 페이지
+        setStep(3);
       }
     } catch (error) {
       alert('회원가입 처리 중 오류가 발생했습니다.');
@@ -142,69 +207,78 @@ export default function SignupPage() {
   };
 
   return (
-    <Container>
-      {/* 단계별 제목 */}
-      <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>
-        {step === 3 ? '가입 완료' : '회원가입'}
-      </h2>
-
-      <FormBox>
+    <PageWrapper>
+      <Header />
+      <LoginCard>
+        {/* 단계별 제목 */}
+        <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>
+          {step === 3 ? '가입 완료' : '회원가입'}
+        </h2>
         {/* Step 1: 이메일 및 비밀번호 설정 */}
         {step === 1 && (
           <>
-            <Input
-              name='email'
-              type='email'
-              placeholder='이메일 입력'
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <Button
-              onClick={handleEmailCheck}
-              variant={isEmailChecked ? 'success' : 'primary'}
-            >
-              {isEmailChecked ? '인증 완료' : '중복 확인'}
-            </Button>
+            <InputWrapper>
+              <InputField
+                name='email'
+                type='email'
+                placeholder='이메일 입력'
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <Duplicateutton
+                onClick={handleEmailCheck}
+                variant={isEmailChecked ? 'success' : 'primary'}
+              >
+                {isEmailChecked ? '인증 완료' : '중복 확인'}
+              </Duplicateutton>
+            </InputWrapper>
 
-            <Input
-              name='password'
-              type='password'
-              placeholder='비밀번호를 8~16자 영문, 숫자, 특수문자 조합으로 입력하세요.'
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <Input
-              name='confirmPassword'
-              type='password'
-              placeholder='비밀번호를 8~16자 영문, 숫자, 특수문자 조합으로 입력하세요.'
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
+            <InputWrapper>
+              <InputField
+                name='password'
+                type='password'
+                placeholder='비밀번호를 8~16자 영문, 숫자, 특수문자 조합으로 입력하세요.'
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <InputField
+                name='confirmPassword'
+                type='password'
+                placeholder='비밀번호 확인'
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+            </InputWrapper>
 
-            <Button onClick={handleNextStep} disabled={!isEmailChecked}>
+            <NextButton onClick={handleNextStep} disabled={!isEmailChecked}>
               다음
-            </Button>
+            </NextButton>
           </>
         )}
 
         {/* Step 2: 아이디 설정 */}
         {step === 2 && (
           <>
-            <Input
-              name='userId'
-              placeholder='사용할 ID 입력'
-              value={formData.userId}
-              onChange={handleChange}
-            />
-            <Button
-              onClick={handleIdCheck}
-              variant={isIdChecked ? 'success' : 'primary'}
-            >
-              {isIdChecked ? '인증 완료' : '중복 확인'}
-            </Button>
-            <Button onClick={handleNextStep} disabled={!isIdChecked}>
+            <InputWrapper>
+              <InputField
+                name='userId'
+                placeholder='사용할 ID 입력'
+                value={formData.userId}
+                onChange={handleChange}
+              />
+              <Duplicateutton
+                onClick={handleIdCheck}
+                variant={isIdChecked ? 'success' : 'primary'}
+              >
+                {isIdChecked ? '인증 완료' : '중복 확인'}
+              </Duplicateutton>
+            </InputWrapper>
+
+            <NextButton onClick={handleNextStep} disabled={!isIdChecked}>
               다음
-            </Button>
+            </NextButton>
           </>
         )}
 
@@ -234,13 +308,16 @@ export default function SignupPage() {
               onChange={handleFileChange}
               style={{ marginBottom: '10px' }}
             />
-            <Input
-              name='nickname'
-              placeholder='닉네임 입력'
-              value={formData.nickname}
-              onChange={handleChange}
-            />
-            <Button onClick={handleSubmit}>가입 완료</Button>
+            <InputWrapper>
+              <InputField
+                name='nickname'
+                placeholder='닉네임 입력'
+                value={formData.nickname}
+                onChange={handleChange}
+              />
+            </InputWrapper>
+
+            <NextButton onClick={handleSubmit}>가입 완료</NextButton>
           </>
         )}
 
@@ -250,10 +327,12 @@ export default function SignupPage() {
             <p style={{ fontSize: '1.2rem', margin: '20px 0' }}>
               회원가입이 완료되었습니다!
             </p>
-            <Button onClick={() => navigate('/login')}>로그인하러 가기</Button>
+            <NextButton onClick={() => navigate('/login')}>
+              로그인하러 가기
+            </NextButton>
           </>
         )}
-      </FormBox>
-    </Container>
+      </LoginCard>
+    </PageWrapper>
   );
 }

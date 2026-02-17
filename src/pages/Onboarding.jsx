@@ -1,10 +1,105 @@
 // src/pages/Onboarding.jsx
 import React from 'react';
-//import Input from '../components/Input/Input';
-import Button from '../components/Button/Button';
-//import Header from '../components/Header/Header';
 import { useNavigate, Link } from 'react-router-dom';
+import LogoImage from '../assets/images/Logo.png';
 import styled from '@emotion/styled';
+
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 1000px;
+  height: 600px;
+  background-color: #b2ebf2b1; //피그마와 다르게 비침.
+  border-radius: 20px;
+  border: 1px solid #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+`;
+
+const Logo = styled.img`
+  width: 600px; /* 원하는 너비 */
+  height: auto; /* 비율 유지 */
+  margin-bottom: 50px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+`;
+
+const SocialButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+`;
+
+const BaseButton = styled.button`
+  border: none;
+  border-radius: 25px;
+  height: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const GoogleButton = styled(BaseButton)`
+  background-color: white;
+  color: #333;
+  flex: 1;
+`;
+
+const KakaoButton = styled(BaseButton)`
+  background-color: #fee500;
+  color: #3c1e1e;
+  flex: 1;
+`;
+
+const MainLoginButton = styled.button`
+  border: none;
+  border-radius: 35px;
+  height: 70px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+  background-color: black;
+  color: white;
+  width: 100%;
+  font-size: 18px;
+`;
+
+const SignupText = styled.p`
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+
+  span {
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+`;
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -27,49 +122,28 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center', // 세로 중앙 정렬
-        alignItems: 'center', // 가로 중앙 정렬
-        height: '100vh', // 화면 높이 전체 사용
-        width: '100vw', // 화면 너비 전체 사용
-        textAlign: 'center',
-      }}
-    >
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Mutle</h1>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          alignItems: 'center',
-        }}
-      >
-        <Button variant='primary' size='md' onClick={handleGoogleLogin}>
-          google로 로그인
-        </Button>
-        <Button variant='primary' size='md' onClick={handleKakaoLogin}>
-          카카오톡으로 로그인
-        </Button>
-        <Button variant='primary' size='md' onClick={() => navigate('/login')}>
+    <LoginCard>
+      <Logo src={LogoImage} alt='Mutle Logo' />
+
+      <ButtonGroup>
+        <SocialButtons>
+          <GoogleButton onClick={handleGoogleLogin}>
+            Google로 로그인
+          </GoogleButton>
+          <KakaoButton onClick={handleKakaoLogin}>
+            카카오톡으로 로그인
+          </KakaoButton>
+        </SocialButtons>
+
+        <MainLoginButton onClick={() => navigate('/login')}>
           로그인하기
-        </Button>
-      </div>
-      <p style={{ marginBottom: '40px', color: '#000000' }}>
-        아직 계정이 없으신가요?{' '}
-        <Link
-          to='/signup'
-          style={{
-            marginBottom: '40px',
-            color: '#000000',
-            textDecoration: 'underline',
-          }}
-        >
-          회원가입
-        </Link>
-      </p>
-    </div>
+        </MainLoginButton>
+      </ButtonGroup>
+
+      <SignupText>
+        아직 계정이 없으신가요?
+        <Link to='/signup'> 회원가입</Link>
+      </SignupText>
+    </LoginCard>
   );
 }
