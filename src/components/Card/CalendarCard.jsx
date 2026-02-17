@@ -189,36 +189,39 @@ const styles = {
     textTransform: 'uppercase',
   },
   dayCell: {
-    height: '50px',
-    padding: '0',
-    minHeight: '50px',
-    padding: '6px',
+    height: '60px', // 기존 높이 유지 (약 50~60px)
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'white',
-    alignItems: 'flex-start',
-    transition: 'background-color 0.2s',
     backgroundColor: '#FAF9F8',
+    justifyContent: 'space-between',
     overflow: 'hidden',
+    border: 'none',
   },
   dayNumber: {
+    position: 'absolute',
     fontSize: '16px',
+    top: '4px',
+    left: '6px',
     color: '#000000',
     marginBottom: '4px',
+    alignItems: 'left',
   },
   albumWrapper: {
     width: '100%',
+    height: '100%',
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '2px',
   },
   albumArt: {
-    width: '100px',
-    height: '50px',
-    borderRadius: '4px',
-    borderColor: 'white',
-
+    width: '40px',
+    height: '40px',
+    aspectRatio: '1 / 1', // 1:1 비율
     objectFit: 'cover',
+    borderRadius: '6px', // 둥근 테두리
+    border: '2px solid white',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.6)',
+    flexShrink: 0,
   },
 };

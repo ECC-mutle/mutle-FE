@@ -8,7 +8,7 @@ import bgImg from '../../assets/images/BackgroundPic.png';
 
 const styles = {
   container: {
-    height: '100vh',
+    minHeight: '100vh',
     width: '100vw',
     padding: '20px',
     boxSizing: 'border-box',
