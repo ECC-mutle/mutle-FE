@@ -15,7 +15,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
 
-    backgroundImage: `url(${bgImg})`, // 이미지 경로
+    backgroundImage: `url(${bgImg})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

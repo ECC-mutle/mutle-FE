@@ -74,11 +74,10 @@ export const Item = styled.div`
   margin-bottom: 12px;
 `;
 
-export const Profile = styled.div`
-  width: 50px;
-  height: 50px;
+export const Profile = styled.img`
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  background: linear-gradient(to bottom right, #fb923c, #9333ea);
 `;
 
 export const Info = styled.div`
@@ -97,10 +96,36 @@ export const Status = styled.p`
 `;
 
 export const Song = styled.div`
-  background: #f9fafb;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px; /* 이미지와 텍스트 사이 간격 */
+  margin-right: 15px; /* 버튼과의 간격 */
+
+  img {
+    width: 50px; /* 이미지 크기 조절 */
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  .music-info {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    justify-content: center;
+    text-align: left;
+  }
+
+  .track-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 2px;
+  }
+
+  .artist-name {
+    font-size: 14px;
+    color: #8e8e8e; /* 이미지처럼 연한 회색 */
+  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -121,6 +146,6 @@ export const Button = styled.button`
 export const RightSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
 `;

@@ -1,7 +1,6 @@
 // src/pages/Signup.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Input from '../components/Input/Input';
 import Header from '../components/Header/Header';
 import styled from '@emotion/styled';
 import { CheckEmailDuplicate } from '../api/auth';
@@ -39,7 +38,7 @@ const InputWrapper = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  background-color: #b2ebf2; /* 이미지의 입력창 배경색 */
+  background-color: #b2ebf2;
   border: 1px solid #757575;
   border-radius: 40px; /* 아주 둥글게 */
   padding: 5px 20px;
@@ -48,7 +47,8 @@ const InputWrapper = styled.div`
 `;
 
 const Duplicateutton = styled.button`
-  background-color: #000; /* 검정색 버튼 */
+  background-color: ${(props) =>
+    props.$isCheck ? '#B8B7B6' : '#000'}; // 체크되면 회색, 아니면 검정색
   color: white;
   border: none;
   border-radius: 20px;
@@ -57,9 +57,14 @@ const Duplicateutton = styled.button`
   cursor: pointer;
   white-space: nowrap;
   margin-left: 10px;
+  transition: background-color 0.3s ease;
 
   &:disabled {
     background-color: #555;
+  }
+
+  &:hover {
+    opacity: 0.8;
   }
 `;
 
@@ -122,6 +127,7 @@ export default function SignupPage() {
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 입력값 변경 핸들러
   const handleChange = (e) => {
@@ -155,10 +161,29 @@ export default function SignupPage() {
   };
 
   const handleIdCheck = async () => {
-    // API가 따로 있다면 해당 API 사용, 여기선 예시로 처리
     if (formData.userId.length < 4) return alert('ID를 4자 이상 입력해주세요.');
-    alert('사용 가능한 ID입니다.');
-    setIsIdChecked(true);
+
+    try {
+      const response = await CheckIdDuplicate(formData.userId);
+
+      // 서버 응답의 status가 'success'이면 중복이 아니라는 뜻!
+      if (response.status === 'success') {
+        alert('사용 가능한 아이디입니다.');
+        setIsIdChecked(true);
+      } else {
+        // 서버에서 success가 아닌 다른 값을 보낼 경우 (중복 등)
+        alert(response.message || '이미 가입한 아이디입니다.');
+        setIsIdChecked(false);
+      }
+    } catch (error) {
+      // 400이나 409 같은 에러 코드로 올 경우 catch에서 처리
+      if (error.response && error.response.status === 400) {
+        alert('이미 존재하는 아이디입니다.');
+      } else {
+        alert('중복 확인 중 오류가 발생했습니다.');
+      }
+      setIsIdChecked(false);
+    }
   };
 
   const handleNextStep = () => {
@@ -175,17 +200,18 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     try {
       let finalProfileImageUrl = '';
 
-      // 1. 선택된 파일이 있다면 먼저 업로드 진행
       if (selectedFile) {
         const uploadResult = await UploadImage(selectedFile);
 
         finalProfileImageUrl = uploadResult.data;
       }
 
-      // 2. 업로드된 이미지 URL을 포함하여 최종 회원가입 데이터 구성
       const finalData = {
         userId: formData.userId,
         nickname: formData.nickname,
@@ -194,7 +220,6 @@ export default function SignupPage() {
         profileImage: finalProfileImageUrl,
       };
 
-      // 3. 회원가입 API 호출
       const result = await Signup(finalData);
 
       if (result) {
@@ -203,6 +228,8 @@ export default function SignupPage() {
     } catch (error) {
       alert('회원가입 처리 중 오류가 발생했습니다.');
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -227,7 +254,7 @@ export default function SignupPage() {
               />
               <Duplicateutton
                 onClick={handleEmailCheck}
-                variant={isEmailChecked ? 'success' : 'primary'}
+                $isCheck={isEmailChecked}
               >
                 {isEmailChecked ? '인증 완료' : '중복 확인'}
               </Duplicateutton>
@@ -249,6 +276,7 @@ export default function SignupPage() {
                 placeholder='비밀번호 확인'
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                onKeyDown={(e) => e.key === 'Enter' && handleNextStep()}
               />
             </InputWrapper>
 
@@ -269,8 +297,9 @@ export default function SignupPage() {
                 onChange={handleChange}
               />
               <Duplicateutton
+                type='button'
                 onClick={handleIdCheck}
-                variant={isIdChecked ? 'success' : 'primary'}
+                $isCheck={isIdChecked}
               >
                 {isIdChecked ? '인증 완료' : '중복 확인'}
               </Duplicateutton>
@@ -314,10 +343,13 @@ export default function SignupPage() {
                 placeholder='닉네임 입력'
                 value={formData.nickname}
                 onChange={handleChange}
+                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </InputWrapper>
 
-            <NextButton onClick={handleSubmit}>가입 완료</NextButton>
+            <NextButton onClick={handleSubmit} disabled={isLoading}>
+              {isLoading ? '가입 중...' : '가입하기'}
+            </NextButton>
           </>
         )}
 

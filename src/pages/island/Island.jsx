@@ -31,7 +31,7 @@ export default function Island() {
 
       await RequestFriend(token, targetId);
       alert('친구 요청을 보냈습니다!');
-      setIsFriend(true); // 임시로 상태 변경 (실제론 서버 응답 후 처리 권장)
+      //setIsFriend(true); //임시로 상태 변경 (실제론 서버 응답 후 처리 권장)
     } catch (error) {
       console.error('친구 추가 실패:', error);
     }
@@ -195,7 +195,11 @@ export default function Island() {
             calendarData={musicCalendar}
             isClickable={isMyIsland || isFriend}
           />
+        </div>
 
+        {/* 오른쪽: 메뉴 */}
+        <div style={styles.rightMenu}>
+          <MenuCard />
           {!isMyIsland && (
             <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
               <button onClick={() => navigate(-1)} style={styles.backButton}>
@@ -208,11 +212,6 @@ export default function Island() {
               )}
             </div>
           )}
-        </div>
-
-        {/* 오른쪽: 메뉴 */}
-        <div style={styles.rightMenu}>
-          <MenuCard />
         </div>
       </div>
     </div>

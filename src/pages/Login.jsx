@@ -1,7 +1,6 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Input from '../components/Input/Input';
 import Button from '../components/Button/Button';
 import styled from '@emotion/styled';
 import { Login } from '../api/auth';
@@ -22,8 +21,8 @@ const LoginCard = styled.div`
 `;
 
 const Logo = styled.img`
-  width: 600px; /* 원하는 너비 */
-  height: auto; /* 비율 유지 */
+  width: 600px;
+  height: auto;
   margin-bottom: 50px;
 `;
 
@@ -39,8 +38,8 @@ const InputField = styled.input`
   max-width: 450px;
   height: 60px;
   border-radius: 30px;
-  border: 1px solid #455a64; // 이미지 속 입력창 테두리 색상 느낌
-  background-color: rgba(255, 255, 255, 0.4); // 약간 투명한 느낌
+  border: 1px solid #455a64;
+  background-color: rgba(255, 255, 255, 0.4);
   padding: 0 30px;
   font-size: 16px;
   color: #333;
@@ -81,6 +80,8 @@ export default function LoginPage() {
   const [step, setStep] = useState(1); //1일때는 아이디 입력창, 2일때는 비밀번호 입력창
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleNext = () => {
     if (!userId) return alert('아이디를 입력해주세요.');
@@ -88,17 +89,33 @@ export default function LoginPage() {
   };
 
   const handleLogin = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    setErrorMessage('');
+
     try {
       const result = await Login(userId, password);
       if (result) {
         localStorage.setItem('token', result.data.accessToken);
         localStorage.setItem('userId', result.data.userId);
         console.log('결과값:', result);
-        setStep(3);
+        setStep(3); // 성공 화면
       }
     } catch (error) {
-      console.error(error);
-      setStep(4); // 실패 화면으로 이동
+      const serverMessage = error.response?.data?.message || '';
+      let displayMessage = '로그인 정보가 일치하지 않습니다.';
+
+      if (serverMessage.includes('사용자')) {
+        displayMessage = '존재하지 않는 아이디입니다.';
+      } else if (serverMessage.includes('비밀번호')) {
+        displayMessage = '비밀번호가 틀렸습니다.';
+      }
+
+      setErrorMessage(displayMessage);
+
+      setStep(4); // 실패 화면
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -127,21 +144,26 @@ export default function LoginPage() {
             value={password}
             placeholder='비밀번호 입력'
             onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleLogin()}
           />
-          <BaseButton onClick={handleLogin}>로그인</BaseButton>
-          <button
-            onClick={() => setStep(1)}
-            style={{
-              marginTop: '10px',
-              background: 'none',
-              border: 'none',
-              color: 'gray',
-              cursor: 'pointer',
-            }}
-          >
-            이전
-          </button>
+          <BaseButton onClick={handleLogin} disabled={isLoading}>
+            {isLoading ? '로그인 중...' : '로그인'}
+          </BaseButton>
+
+          {!isLoading && (
+            <button
+              onClick={() => setStep(1)}
+              style={{
+                marginTop: '10px',
+                background: 'none',
+                border: 'none',
+                color: 'gray',
+                cursor: 'pointer',
+              }}
+            >
+              이전
+            </button>
+          )}
         </>
       )}
 
@@ -166,9 +188,7 @@ export default function LoginPage() {
         <>
           {/* 로그인_4 화면 구성 (실패 안내) */}
           <>
-            <p style={{ color: 'red', marginBottom: '20px' }}>
-              로그인 정보가 일치하지 않습니다.
-            </p>
+            <p style={{ color: 'red', marginBottom: '20px' }}>{errorMessage}</p>
             <Button onClick={() => setStep(1)}>다시 시도하기</Button>
           </>
         </>
