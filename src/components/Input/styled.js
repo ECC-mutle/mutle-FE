@@ -9,6 +9,19 @@ export const InputGroup = styled.div`
   width: 100%;
 `;
 
+export const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  background-color: #b2ebf2; /* 이미지의 입력창 배경색 */
+  border: 1px solid #757575;
+  border-radius: 40px; /* 아주 둥글게 */
+  padding: 5px 20px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+`;
+
 /*설명 텍스트*/
 export const InputLabel = styled.label`
   font-size: 14px;
@@ -17,22 +30,19 @@ export const InputLabel = styled.label`
 `;
 
 /*props 받아서 스타일 동적으로 바꿈*/
-export const InputField = styled.input(({ isError }) => ({
-  padding: '12px',
-  borderRadius: '6px',
-  fontSize: '16px',
-  border: `1px solid ${isError ? '#dc3545' : '#ddd'}`,
-  transition: 'border-color 0.2s',
-  outline: 'none',
+export const InputField = styled.input`
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 16px;
+  outline: none;
+  color: #333;
 
-  '&:focus': {
-    borderColor: isError ? '#dc3545' : '#007bff',
-  },
-
-  '&:hover': {
-    borderColor: isError ? '#dc3545' : '#bbb',
-  },
-}));
+  &::placeholder {
+    color: #757575;
+  }
+`;
 
 export const ErrorText = styled.p`
   font-size: 12px;

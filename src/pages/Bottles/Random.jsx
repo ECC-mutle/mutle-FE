@@ -1,7 +1,5 @@
 // src/pages/Bottles/Random.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
 import Header from '../../components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -9,15 +7,139 @@ import BottleImg from '../../assets/images/유리병_png.png';
 import { Link } from 'react-router-dom';
 import { GetBottle, ReactBottle, AddBookmark } from '../../api/bottles';
 
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+`;
+
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 900px;
+  height: 550px;
+  background-color: rgba(178, 235, 242, 0.7);
+  border-radius: 30px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: 20px;
+`;
+
+const TitleBar = styled.div`
+  background: white;
+  width: 90%;
+  max-width: 750px;
+  height: 45px;
+  border-radius: 25px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  position: absolute;
+  top: 25px;
+`;
+
 const BottleImage = styled.img`
-  width: 150px;
-  cursor: pointer;
-  transition: transform 0.3s;
+  width: 220px;
+  cursor: 'pointer';
+  transition: transform 0.2s;
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05)};
   }
 `;
-//유리병 이미지는 고정!
+
+const ActionText = styled.p`
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #78909c;
+`;
+
+const HeartBadge = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ff4757;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
+const PaperContent = styled.div`
+  background-color: #fffcf1;
+  width: 70%;
+  height: 330px;
+  margin-top: 60px;
+  border-radius: 5px;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 12px;
+  position: relative;
+`;
+
+const BlueBar = styled.div`
+  background-color: #a2d2ff;
+  width: 75%;
+  height: 38px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 0 15px;
+  text-align: center;
+`;
+
+const WhiteInputBox = styled.div`
+  background-color: white;
+  width: 65%;
+  height: 85px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+`;
+
+const ActionButton = styled.button`
+  padding: 8px 25px;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: ${(props) => (props.primary ? '#74b9ff' : '#fff')};
+  color: ${(props) => (props.primary ? '#fff' : '#74b9ff')};
+  border: ${(props) => (props.primary ? 'none' : '2px solid #74b9ff')};
+`;
 
 const styles = {
   container: {
@@ -28,99 +150,6 @@ const styles = {
     height: '100vh',
     padding: '20px',
     boxSizing: 'border-box',
-  },
-  header: {
-    background: '#b2ebf2',
-    padding: '10px',
-    borderRadius: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  logo: {
-    width: '20px',
-    height: '20px',
-    background: '#ff4081',
-    borderRadius: '50%',
-    marginRight: '10px',
-  },
-  card: {
-    background: '#fff',
-    borderRadius: '15px',
-    border: '1px solid #ddd',
-    padding: '20px',
-    textAlign: 'center',
-    minHeight: '400px',
-    position: 'relative',
-  },
-  titleBar: {
-    borderBottom: '1px solid #eee',
-    paddingBottom: '10px',
-    marginBottom: '30px',
-    fontWeight: 'bold',
-  },
-  contentCenter: { cursor: 'pointer', marginTop: '50px' },
-  bottleIcon: { fontSize: '80px' },
-  guideText: { color: '#999', marginTop: '20px' },
-  detailContent: { display: 'flex', flexDirection: 'column', gap: '15px' },
-  questionBox: {
-    background: '#90caf9',
-    color: '#fff',
-    padding: '8px',
-    borderRadius: '15px',
-  },
-  musicBox: {
-    border: '1px solid #eee',
-    padding: '15px',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
-  },
-  albumArt: {
-    width: '50px',
-    height: '50px',
-    background: '#eee',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  musicInfo: { textAlign: 'left' },
-  memoBox: {
-    background: '#f9f9f9',
-    padding: '20px',
-    borderRadius: '10px',
-    minHeight: '100px',
-    position: 'relative',
-  },
-  heart: {
-    position: 'absolute',
-    bottom: '10px',
-    right: '10px',
-    background: '#ff5252',
-    color: '#fff',
-    padding: '2px 8px',
-    borderRadius: '10px',
-    fontSize: '12px',
-  },
-  buttonGroup: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '10px',
-    marginTop: '20px',
-  },
-  btnNav: {
-    border: '1px solid #ccc',
-    background: '#fff',
-    padding: '5px 15px',
-    borderRadius: '5px',
-  },
-  btnStore: {
-    background: '#4dd0e1',
-    border: 'none',
-    color: '#fff',
-    padding: '5px 15px',
-    borderRadius: '5px',
   },
 };
 
@@ -141,13 +170,8 @@ export default function RandomPage() {
       try {
         setLoading(true);
         const response = await GetBottle(token);
-
-        // 중요: 콘솔을 찍어서 데이터가 어떻게 생겼는지 꼭 확인하세요!
         console.log('서버 응답 데이터:', response);
 
-        // 만약 response 자체가 객체라면 response를,
-        // 만약 response.data 안에 진짜 내용이 있다면 response.data를 넣어야 합니다.
-        // 보통 공통 응답 포맷을 쓰면 response.data에 실제 데이터가 들어있습니다.
         const actualData = response.data || response;
         setBottle(actualData);
       } catch (error) {
@@ -159,21 +183,18 @@ export default function RandomPage() {
     fetchBottle();
   }, [token]);
 
-  // 2. 하트 클릭: 유리병 반응 남기기
   const handleLike = async (e) => {
     e.stopPropagation();
 
-    // 1. 데이터가 있는지 먼저 확인
     if (!bottle || !bottle.bottleId) {
       console.error('유리병 정보가 없어 반응을 남길 수 없습니다.', bottle);
       return;
     }
 
-    console.log('반응을 남길 유리병 ID:', bottle.bottleId); // 여기서 2가 나오는지 485가 나오는지 확인!
+    console.log('반응을 남길 유리병 ID:', bottle.bottleId);
 
     try {
       await ReactBottle(token, bottle.bottleId);
-      // 서버 응답 구조에 맞춰 totalCount 증가
       setBottle({ ...bottle, totalCount: (bottle.totalCount || 0) + 1 });
       alert('마음을 전했습니다! ❤️');
     } catch (error) {
@@ -181,7 +202,6 @@ export default function RandomPage() {
     }
   };
 
-  // 3. 저장하기: 북마크 추가
   const handleSave = async () => {
     try {
       await AddBookmark(token, bottle.bottleId);
@@ -198,68 +218,85 @@ export default function RandomPage() {
     );
 
   return (
-    <div style={styles.container}>
-      <main style={styles.card}>
-        <div style={styles.titleBar}>
+    <PageWrapper>
+      <Header />
+      <LoginCard>
+        <TitleBar>
           {bottle.sender?.senderNickname || '익명'} 님이 유리병을 보내왔어요!
-        </div>
+        </TitleBar>
 
         {viewMode === 'list' ? (
-          <div
-            style={styles.contentCenter}
-            onClick={() => setViewMode('detail')}
-          >
+          <div onClick={() => setViewMode('detail')}>
             <BottleImage src={BottleImg} alt='유리병' />
-            <p style={styles.guideText}>클릭하여 자세히 보기</p>
+            <ActionText> 클릭하여 자세히 보기</ActionText>
           </div>
         ) : (
-          <div style={styles.detailContent}>
-            <div style={styles.questionBox}>Q. {bottle.questionText}</div>
-
-            <div style={styles.musicBox}>
-              <div style={styles.albumArt}>
-                {bottle.musicInfo?.artworkUrl60 ? (
+          <>
+            <PaperContent>
+              <BlueBar>Q. {bottle.questionText}</BlueBar>
+              <WhiteInputBox>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '25px',
+                    padding: '0 15px',
+                    width: '100%',
+                  }}
+                >
                   <img
                     src={bottle.musicInfo.artworkUrl60}
-                    alt='앨범커버'
-                    style={{ width: '100%' }}
+                    alt='album'
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '8px',
+                      border: '1px solid #eee',
+                      flexShrink: 0,
+                    }}
                   />
-                ) : (
-                  '🎵'
-                )}
-              </div>
-              <div style={styles.musicInfo}>
-                <p>
-                  <strong>{bottle.musicInfo?.trackName}</strong>
-                </p>
-                <p>{bottle.musicInfo.artistName}</p>
-              </div>
-            </div>
+                  <div
+                    style={{
+                      color: '#333',
+                      textAlign: 'left',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <strong style={{ display: 'block', fontSize: '0.95rem' }}>
+                      {bottle.musicInfo?.trackName}
+                    </strong>
+                    <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                      {bottle.musicInfo.artistName}
+                    </span>
+                  </div>
+                </div>
+              </WhiteInputBox>
 
-            <div style={styles.memoBox}>
-              <p>{bottle.memo}</p>
-              {/* 하트 버튼 클릭 시 handleLike 호출 */}
-              <span
-                style={{ ...styles.heart, cursor: 'pointer' }}
-                onClick={handleLike}
-              >
-                ❤️ {bottle.totalCount || 0}
-              </span>
-            </div>
+              <BlueBar>
+                {bottle.sender?.senderNickname || '익명'} 님의 한마디
+              </BlueBar>
+              <WhiteInputBox as='label'>
+                <p>{bottle.memo}</p>
+                <HeartBadge onClick={handleLike}>
+                  ❤️ {bottle.totalCount || 0}
+                </HeartBadge>
+              </WhiteInputBox>
+            </PaperContent>
 
-            <div style={styles.buttonGroup}>
-              {/* 넘어가기: Me 페이지로 이동 */}
-              <button style={styles.btnNav} onClick={() => navigate('/Me')}>
+            <ButtonGroup>
+              <ActionButton onClick={() => navigate('/Me')}>
                 넘어가기
-              </button>
-              {/* 저장하기: 북마크 API 호출 */}
-              <button style={styles.btnStore} onClick={handleSave}>
+              </ActionButton>
+              <ActionButton primary onClick={handleSave}>
                 저장하기
-              </button>
-            </div>
-          </div>
+              </ActionButton>
+            </ButtonGroup>
+          </>
         )}
-      </main>
-    </div>
+      </LoginCard>
+    </PageWrapper>
   );
 }
