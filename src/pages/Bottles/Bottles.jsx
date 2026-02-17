@@ -201,7 +201,7 @@ export default function BottlesPage() {
     const fetchQuestion = async () => {
       try {
         const storedToken = localStorage.getItem('token');
-        console.log('전송할 토큰:', storedToken); // 토큰이 제대로 찍히는지 확인
+        console.log('전송할 토큰:', storedToken);
 
         if (!storedToken) {
           setQuestion('로그인 정보가 없습니다.');
@@ -211,9 +211,9 @@ export default function BottlesPage() {
         const res = await GettodayQuest(storedToken);
         if (res.data) {
           setQuestion(res.data.questionText);
-          setQuestionId(res.data.questionId); // 여기서 1이 제대로 들어가는지 확인
+          setQuestionId(res.data.questionId);
         }
-        console.log('서버 전체 응답:', res); // 여기서 데이터 구조 확인
+        console.log('서버 전체 응답:', res);
 
         const questData = res.data;
 
@@ -254,8 +254,6 @@ export default function BottlesPage() {
       };
 
       console.log('전송할 데이터:', bottleData);
-
-      await SendBottle(token, bottleData);
 
       // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옴
       // musicCalendar에 방금 보낸 병 추가하는 작업

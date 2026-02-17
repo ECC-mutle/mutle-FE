@@ -4,7 +4,6 @@ import Header from '../../components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BottleImg from '../../assets/images/유리병_png.png';
-import { Link } from 'react-router-dom';
 import { GetBottle, ReactBottle, AddBookmark } from '../../api/bottles';
 
 const PageWrapper = styled.div`
@@ -211,11 +210,9 @@ export default function RandomPage() {
     }
   };
 
-  if (loading) return <div style={styles.container}>유리병을 건지는 중...</div>;
+  if (loading) return <LoginCard>유리병을 건지는 중...</LoginCard>;
   if (!bottle)
-    return (
-      <div style={styles.container}>현재 바다에 떠다니는 유리병이 없네요.</div>
-    );
+    return <LoginCard>현재 바다에 떠다니는 유리병이 없네요.</LoginCard>;
 
   return (
     <PageWrapper>
@@ -279,7 +276,7 @@ export default function RandomPage() {
                 {bottle.sender?.senderNickname || '익명'} 님의 한마디
               </BlueBar>
               <WhiteInputBox as='label'>
-                <p>{bottle.memo}</p>
+                <p>{bottle.memo || '작성된 메모가 없습니다.'}</p>
                 <HeartBadge onClick={handleLike}>
                   ❤️ {bottle.totalCount || 0}
                 </HeartBadge>

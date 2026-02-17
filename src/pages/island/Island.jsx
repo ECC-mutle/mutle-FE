@@ -17,7 +17,7 @@ export default function Island() {
   const [musicCalendar, setMusicCalendar] = useState([]);
   const location = useLocation();
   const { userId: urlUserId } = useParams();
-  const [isFriend, setIsFriend] = useState(false); //친구 상태 확인용
+  const [isFriend, setIsFriend] = useState(false);
   const navigate = useNavigate();
 
   const myUserId = localStorage.getItem('userId');
