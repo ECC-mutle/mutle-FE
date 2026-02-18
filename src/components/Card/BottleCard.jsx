@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import DefaultProfileImg from '../../assets/images/defaultProfile.png';
 
 const BottleCard = ({ data }) => {
   const navigate = useNavigate();
@@ -15,9 +16,12 @@ const BottleCard = ({ data }) => {
       {/* 상단: 프로필 및 아이디 */}
       <div style={styles.profileSection}>
         <img
-          src={data.senderProfileImage}
+          src={data.senderProfileImage || DefaultProfileImg}
           alt='profile'
           style={styles.profileImg}
+          onError={(e) => {
+            e.target.src = DefaultProfileImg;
+          }}
         />
         <span style={styles.userId}>{data.senderNickname}</span>
         <span style={styles.star}>⭐</span>
@@ -66,6 +70,11 @@ const styles = {
     height: '40px',
     borderRadius: '50%',
     backgroundColor: '#ffeb3b',
+    objectFit: 'cover',
+    objectPosition: 'center',
+    imageRendering: 'auto',
+    WebkitBackfaceVisibility: 'hidden',
+    transform: 'translateZ(0)',
   },
   userId: { fontWeight: 'bold', fontSize: '16px' },
   questionBox: {
@@ -84,10 +93,32 @@ const styles = {
     borderRadius: '20px',
     border: '1px solid #eee',
   },
-  albumArt: { width: '40px', height: '40px', borderRadius: '8px' },
-  musicText: { display: 'flex', flexDirection: 'column', fontSize: '12px' },
-  trackName: { fontWeight: '600' },
-  artistName: { color: '#888' },
+  albumArt: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '8px',
+    flexShrink: 0,
+  },
+  musicText: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    textAlign: 'left',
+    overflow: 'hidden',
+  },
+  trackName: {
+    fontWeight: '600',
+    fontSize: '14px',
+    textAlign: 'left',
+    width: '100%',
+  },
+  artistName: {
+    color: '#888',
+    fontSize: '12px',
+    textAlign: 'left',
+    width: '100%',
+  },
   buttonWrapper: { display: 'flex', justifyContent: 'flex-end' },
   detailButton: {
     backgroundColor: 'black',

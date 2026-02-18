@@ -1,74 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import Header from '../components/Header/Header';
-import ProfileCard from '../components/Card/ProfileCard';
-import MusicCard from '../components/Card/MusicCard';
-import CalendarCard from '../components/Card/CalendarCard';
-import MenuCard from '../components/Card/MenuCard';
-import NavigateCard from '../components/Card/NavigateCard';
-import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../api/island';
-import { RequestFriend } from '../api/friends';
+import { styles } from '../island/Island.style';
+import Header from '../../components/Header/Header';
+import ProfileCard from '../../components/Card/ProfileCard';
+import MusicCard from '../../components/Card/MusicCard';
+import CalendarCard from '../../components/Card/CalendarCard';
+import MenuCard from '../../components/Card/MenuCard';
+import NavigateCard from '../../components/Card/NavigateCard';
+import { GetProfile, UpdatePlatform, UpdateRepMusic } from '../../api/island';
+import { RequestFriend } from '../../api/friends';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-
-const styles = {
-  container: {
-    height: '100vh',
-    width: '100vw',
-    padding: '20px',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  navigateWrapper: {
-    flexShrink: 0,
-    marginTop: '15px',
-    marginBottom: '15px',
-  },
-  mainContent: {
-    flex: 1,
-    display: 'flex',
-    gap: '20px',
-    minHeight: 0,
-  },
-  leftSection: {
-    flex: '1',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '24px',
-  },
-  topCards: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '24px',
-  },
-  rightMenu: {
-    width: '350px',
-    flexShrink: 0,
-  },
-  buttonGroup: {
-    display: 'flex',
-    gap: '12px',
-    marginTop: '15px',
-    justifyContent: 'center',
-  },
-  backButton: {
-    padding: '10px 24px',
-    backgroundColor: '#666',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '600',
-  },
-  followButton: {
-    padding: '10px 24px',
-    backgroundColor: '#4A90E2',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '600',
-  },
-};
 
 export default function Island() {
   const [profile, setProfile] = useState(null);
@@ -77,7 +17,7 @@ export default function Island() {
   const [musicCalendar, setMusicCalendar] = useState([]);
   const location = useLocation();
   const { userId: urlUserId } = useParams();
-  const [isFriend, setIsFriend] = useState(false); //친구 상태 확인용
+  const [isFriend, setIsFriend] = useState(false);
   const navigate = useNavigate();
 
   const myUserId = localStorage.getItem('userId');
@@ -91,7 +31,7 @@ export default function Island() {
 
       await RequestFriend(token, targetId);
       alert('친구 요청을 보냈습니다!');
-      setIsFriend(true); // 임시로 상태 변경 (실제론 서버 응답 후 처리 권장)
+      //setIsFriend(true); //임시로 상태 변경 (실제론 서버 응답 후 처리 권장)
     } catch (error) {
       console.error('친구 추가 실패:', error);
     }
@@ -100,13 +40,17 @@ export default function Island() {
   const handleAddPlatform = async (newPlatformName, newPlatformNickname) => {
     try {
       const token = localStorage.getItem('token');
-
+      const formattedName = newPlatformName.replace(/\s+/g, '_').toUpperCase();
       const newPlatform = [
         {
-          platformName: newPlatformName.toUpperCase(),
+          platformName: formattedName,
           platformNickname: newPlatformNickname,
         },
       ];
+      console.log(
+        '🚀 [Step 1] 전송 데이터 확인:',
+        JSON.stringify(newPlatform, null, 2),
+      );
 
       // 기존 덮어쓰기 (의도된 동작)
       await UpdatePlatform(newPlatform, token);
@@ -243,6 +187,7 @@ export default function Island() {
               // 자식에게 부모의 로직(함수)을 통째로 넘깁니다.
               handleAddPlatform={handleAddPlatform}
               onAddPlatform={isMyIsland ? handleAddPlatform : null}
+              isEditable={isMyIsland}
             />
           </div>
 
@@ -251,7 +196,11 @@ export default function Island() {
             calendarData={musicCalendar}
             isClickable={isMyIsland || isFriend}
           />
+        </div>
 
+        {/* 오른쪽: 메뉴 */}
+        <div style={styles.rightMenu}>
+          <MenuCard />
           {!isMyIsland && (
             <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
               <button onClick={() => navigate(-1)} style={styles.backButton}>
@@ -264,11 +213,6 @@ export default function Island() {
               )}
             </div>
           )}
-        </div>
-
-        {/* 오른쪽: 메뉴 */}
-        <div style={styles.rightMenu}>
-          <MenuCard />
         </div>
       </div>
     </div>

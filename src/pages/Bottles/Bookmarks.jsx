@@ -4,16 +4,21 @@ import MenuCard from '../../components/Card/MenuCard';
 import NavigateCard from '../../components/Card/NavigateCard';
 import BottleCard from '../../components/Card/BottleCard';
 import { GetBookmarkList } from '../../api/bottles';
+import bgImg from '../../assets/images/BackgroundPic.png';
 
 const styles = {
   container: {
-    height: '100vh',
+    minHeight: '100vh',
     width: '100vw',
     padding: '20px',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#F0F8FF',
+
+    backgroundImage: `url(${bgImg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
   },
   navigateWrapper: { flexShrink: 0, marginBottom: '15px' },
   mainContent: { flex: 1, display: 'flex', gap: '20px', minHeight: 0 },

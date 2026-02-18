@@ -1,11 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 
-export default function MenuCard() {
+export default function MenuCard({ requestCount }) {
   const navigate = useNavigate();
+  const styles = {
+    badge: {
+      backgroundColor: '#FF6B6B',
+      color: 'white',
+      borderRadius: '50%',
+      width: '20px',
+      height: '20px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+  };
   return (
     <div
       style={{
-        backgroundColor: 'white',
+        backgroundColor: '#FAF9F8',
         borderRadius: '8px',
         padding: '24px',
         boxShadow: '0 10px 15px rgba(0,0,0,0.1)',
@@ -57,21 +72,6 @@ export default function MenuCard() {
           }}
         >
           <span>≡ 받은 유리병 보기</span>
-          <span
-            style={{
-              backgroundColor: '#ef4444',
-              color: 'white',
-              borderRadius: '9999px',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '14px',
-            }}
-          >
-            1
-          </span>
         </button>
         <button
           onClick={() => navigate('/friends')}
@@ -89,14 +89,7 @@ export default function MenuCard() {
           }}
         >
           <span>≡ 친구 관리</span>
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              backgroundColor: '#ef4444',
-              borderRadius: '9999px',
-            }}
-          ></span>
+          {requestCount > 0 && <span style={styles.badge}>{requestCount}</span>}
         </button>
       </div>
     </div>

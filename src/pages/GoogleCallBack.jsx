@@ -28,8 +28,14 @@ export default function GoogleCallback() {
             response.accessToken ||
             (response.data && response.data.accessToken);
 
+          const { refreshToken, userId } = response.data;
+
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('userId', userId);
+
           if (token) {
             localStorage.setItem('token', token);
+
             alert('반갑습니다!');
             navigate('/bottles/bottles');
           } else {

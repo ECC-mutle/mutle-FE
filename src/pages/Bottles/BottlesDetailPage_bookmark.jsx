@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GetBottleDetail } from '../../api/bottles';
 import BottleImg from '../../assets/images/유리병_png.png';
+import Header from '../../components/Header/Header';
+import styled from '@emotion/styled';
+import { ReactBottle } from '../../api/bottles';
 
 export default function BottlesDetailPage_bookmark() {
   const { bottleId } = useParams();
@@ -30,12 +33,31 @@ export default function BottlesDetailPage_bookmark() {
     fetchDetail();
   }, [bottleId, navigate]);
 
-  if (loading) return <Container>유리병을 건져 올리는 중...</Container>;
+  if (loading) return <LoginCard>유리병을 건져 올리는 중...</LoginCard>;
   console.log('받아온 데이터 전체:', bottle);
 
   if (!bottle || !bottle.musicInfo) {
-    return <Container>데이터를 불러오는 중입니다...</Container>;
+    return <LoginCard>데이터를 불러오는 중입니다...</LoginCard>;
   }
+
+  const handleLike = async (e) => {
+    e.stopPropagation();
+
+    if (!bottle || !bottle.bottleId) {
+      console.error('유리병 정보가 없어 반응을 남길 수 없습니다.', bottle);
+      return;
+    }
+
+    console.log('반응을 남길 유리병 ID:', bottle.bottleId);
+
+    try {
+      await ReactBottle(token, bottle.bottleId);
+      setBottle({ ...bottle, totalCount: (bottle.totalCount || 0) + 1 });
+      alert('마음을 전했습니다! ❤️');
+    } catch (error) {
+      alert('반응을 남기는 데 실패했습니다. (인증 오류 가능성)');
+    }
+  };
 
   const handleVisit = () => {
     console.log('현재 bottle 데이터:', bottle);
@@ -49,160 +71,202 @@ export default function BottlesDetailPage_bookmark() {
   };
 
   return (
-    <Container>
-      <Title>MUTLE</Title>
+    <PageWrapper>
+      <Header />
+      <LoginCard>
+        <PaperContent>
+          <BlueBar>Q. {bottle.questionText}</BlueBar>
+          <WhiteInputBox>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '25px',
+                padding: '0 15px',
+                width: '100%',
+              }}
+            >
+              <img
+                src={bottle.musicInfo.artworkUrl60}
+                alt='album'
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '8px',
+                  border: '1px solid #eee',
+                  flexShrink: 0,
+                }}
+              />
+              <div
+                style={{
+                  color: '#333',
+                  textAlign: 'left',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <strong style={{ display: 'block', fontSize: '0.95rem' }}>
+                  {bottle.musicInfo.trackName}
+                </strong>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                  {bottle.musicInfo.artistName}
+                </span>
+              </div>
+            </div>
+          </WhiteInputBox>
 
-      <Card>
-        <BottleIcon src={BottleImg} alt='유리병' />
+          <BlueBar>
+            {bottle.sender?.senderNickname || '익명'} 님의 한마디
+          </BlueBar>
 
-        <SectionTitle>오늘의 질문</SectionTitle>
-        <QuestionText>{bottle.questionText}</QuestionText>
+          <WhiteInputBox as='label'>
+            <p>{bottle.memo || '작성된 메모가 없습니다.'}</p>
+            <HeartBadge onClick={handleLike}>
+              ❤️ {bottle.totalCount || 0}
+            </HeartBadge>
+          </WhiteInputBox>
+        </PaperContent>
 
-        <SectionTitle>선택한 음악</SectionTitle>
-        <MusicCard>
-          <AlbumArt src={bottle.musicInfo.artworkUrl60} alt='앨범 커버' />
-          <MusicInfo>
-            <TrackName>{bottle.musicInfo.trackName}</TrackName>
-            <ArtistName>{bottle.musicInfo.artistName}</ArtistName>
-          </MusicInfo>
-        </MusicCard>
-
-        <SectionTitle>남긴 메모</SectionTitle>
-        <MemoBox>{bottle.memo || '작성된 메모가 없습니다.'}</MemoBox>
-
-        <BackButton onClick={() => navigate(-1)}>뒤로가기</BackButton>
-        <BackButton onClick={handleVisit}>섬 방문하기</BackButton>
-      </Card>
-    </Container>
+        <ButtonGroup>
+          <ActionButton onClick={() => navigate(-1)}>뒤로가기</ActionButton>
+          <ActionButton primary onClick={handleVisit}>
+            {bottle.sender?.senderNickname || '익명'} 님의 섬 방문하기
+          </ActionButton>
+        </ButtonGroup>
+      </LoginCard>
+    </PageWrapper>
   );
 }
 
-import styled from '@emotion/styled';
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+`;
 
-// 스타일 코드
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 900px;
+  height: 550px;
+  background-color: rgba(178, 235, 242, 0.7);
+  border-radius: 30px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: 20px;
+`;
 
-export const Container = styled.div`
+const TitleBar = styled.div`
+  background: white;
+  width: 90%;
+  max-width: 750px;
+  height: 45px;
+  border-radius: 25px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  position: absolute;
+  top: 25px;
+`;
+
+const HeartBadge = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ff4757;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
+const PaperContent = styled.div`
+  background-color: #fffcf1;
+  width: 70%;
+  height: 330px;
+  margin-top: 60px;
+  border-radius: 5px;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  width: 100vw;
-  background-color: #f0f8ff;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
+  padding: 20px 0;
+  gap: 12px;
+  position: relative;
 `;
 
-export const Title = styled.h1`
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #333;
-  letter-spacing: 2px;
-`;
-
-export const Card = styled.div`
-  background: rgba(255, 255, 255, 0.85);
-  padding: 40px;
-  border-radius: 24px;
-  border: 2px solid #add8e6;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 10px 25px rgba(173, 216, 230, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const BottleIcon = styled.img`
-  width: 80px;
-  margin-bottom: 20px;
-`;
-
-export const SectionTitle = styled.h3`
-  font-size: 0.9rem;
-  color: #888;
-  margin-top: 20px;
-  margin-bottom: 8px;
-  align-self: flex-start;
-`;
-
-export const QuestionText = styled.p`
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  line-height: 1.4;
-  word-break: keep-all;
-`;
-
-export const MusicCard = styled.div`
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 16px;
-  border: 1px solid #add8e6;
-  width: 100%;
-  text-align: left;
-  box-sizing: border-box;
-`;
-
-export const AlbumArt = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 10px;
-  margin-right: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-export const MusicInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const TrackName = styled.strong`
-  font-size: 1rem;
-  color: #222;
-`;
-
-export const ArtistName = styled.span`
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 4px;
-`;
-
-export const MemoBox = styled.div`
-  width: 100%;
-  min-height: 100px;
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  text-align: left;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #444;
-  margin-bottom: 30px;
-  box-sizing: border-box;
-  white-space: pre-wrap; // 줄바꿈 유지
-`;
-
-export const BackButton = styled.button`
-  padding: 12px 40px;
+const BlueBar = styled.div`
   background-color: #a2d2ff;
+  width: 75%;
+  height: 38px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 0 15px;
+  text-align: center;
+`;
+
+const WhiteInputBox = styled.div`
+  background-color: white;
+  width: 65%;
+  height: 85px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+`;
+
+const ActionButton = styled.button`
+  padding: 8px 25px;
+  border-radius: 20px;
   border: none;
-  border-radius: 25px;
+  color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
-  &:hover {
-    background-color: #8cc3f7;
-  }
+  background-color: ${(props) => (props.primary ? '#74b9ff' : '#fff')};
+  color: ${(props) => (props.primary ? '#fff' : '#74b9ff')};
+  border: ${(props) => (props.primary ? 'none' : '2px solid #74b9ff')};
 `;
 
-export const StatusText = styled.p`
-  color: #666;
-  font-size: 1.1rem;
-`;
+const styles = {
+  LoginCard: {
+    width: '100%',
+    maxWidth: '500px',
+    margin: '0 auto',
+    background: '#e0f2f1',
+    height: '100vh',
+    padding: '20px',
+    boxSizing: 'border-box',
+  },
+};

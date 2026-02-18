@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import FriendItem from './FriendItem';
 import NotFriendItem from './NotFriendItem';
+import DefaultProfileImg from '../../../assets/images/defaultProfile.png';
+
 import {
   GetFriendList,
   SearchFriends,
@@ -26,28 +28,6 @@ export default function FriendsListCard() {
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem('token');
-
-  // 친구 목록 로딩
-  {
-    /* api 형식
-    {
-  "status": "string",
-  "message": "string",
-  "data": [
-    {
-      "id": 0, -> userid로 수정됨. 
-      "nickname": "string",
-      "profileImage": "string",
-      "bio": "string",
-      "repMusicInfo": {
-        "trackName": "string",
-        "artistName": "string",
-        "artworkUrl60": "string"
-      }
-    }
-  ]
-}*/
-  }
 
   //친구 삭제 처리 함수
   const handleDeleteFriend = async (friendId) => {
@@ -151,7 +131,7 @@ export default function FriendsListCard() {
           friends.map((friend) => (
             <FriendItem
               key={friend.userId}
-              friend={friend}
+              friends={friend}
               onDelete={() => {
                 console.log('삭제하려는 ID:', friend.userId);
                 handleDeleteFriend(friend.userId);

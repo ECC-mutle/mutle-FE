@@ -3,7 +3,7 @@ import './App.css';
 import styled from '@emotion/styled';
 import BackgroundImage from './assets/images/BackgroundPic.png';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Island from './pages/Island';
+import Island from './pages/island/Island';
 import Friends from './pages/Friends';
 import Me from './pages/Me/Me';
 import OnboardingPage from './pages/Onboarding';
@@ -49,31 +49,33 @@ const Background = styled.div`
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<OnboardingPage />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/kakao-callback' element={<KakaoCallback />} />
-        <Route path='/google-callback' element={<GoogleCallback />} />
-        <Route path='/signup' element={<SignupPage />} />
-        <Route path='/bottles/bottles' element={<BottlesPage />} />
-        <Route path='/search-music' element={<SearchMusicPage />} />
-        <Route path='/me' element={<Me />} />
-        <Route path='/random' element={<RandomPage />} />
-        <Route path='/island' element={<Island />} />
-        <Route path='/island/:userId' element={<Island />} />
-        <Route path='/friends' element={<Friends />} />
-        <Route path='/bookmarks' element={<BookmarksPage />} />
-        <Route
-          path='/search-music-island'
-          element={<SearchMusicPage_island />}
-        />
-        <Route path='/accountinfo' element={<AccountPage />} />
-        <Route
-          path='/bookmarkbottles/:bottleId'
-          element={<BottlesDetailPage_bookmark />}
-        />
-        <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
-      </Routes>
+      <Background>
+        <Routes>
+          <Route path='/' element={<OnboardingPage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/kakao-callback' element={<KakaoCallback />} />
+          <Route path='/google-callback' element={<GoogleCallback />} />
+          <Route path='/signup' element={<SignupPage />} />
+          <Route path='/bottles/bottles' element={<BottlesPage />} />
+          <Route path='/search-music' element={<SearchMusicPage />} />
+          <Route path='/me' element={<Me />} />
+          <Route path='/random' element={<RandomPage />} />
+          <Route path='/island' element={<Island />} />
+          <Route path='/island/:userId' element={<Island />} />
+          <Route path='/friends' element={<Friends />} />
+          <Route path='/bookmarks' element={<BookmarksPage />} />
+          <Route
+            path='/search-music-island'
+            element={<SearchMusicPage_island />}
+          />
+          <Route path='/accountinfo' element={<AccountPage />} />
+          <Route
+            path='/bookmarkbottles/:bottleId'
+            element={<BottlesDetailPage_bookmark />}
+          />
+          <Route path='/bottles/:bottleId' element={<BottleDetailPage />} />
+        </Routes>
+      </Background>
     </BrowserRouter>
   );
 }

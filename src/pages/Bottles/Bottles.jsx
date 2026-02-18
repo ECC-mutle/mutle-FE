@@ -1,81 +1,167 @@
 // src/pages/Bottles/Bottles.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
+import Header from '../../components/Header/Header';
 import { Link } from 'react-router-dom';
 import BottleImg from '../../assets/images/유리병_png.png';
 import { GettodayQuest, SendBottle } from '../../api/bottles';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const Container = styled.div`
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+`;
+
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 900px;
+  height: 550px;
+  background-color: rgba(178, 235, 242, 0.7);
+  border-radius: 30px;
+  border: 1px solid #333;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: #f0f8ff; /* 배경 이미지가 없다면 하늘색으로 대체 */
-  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: 20px;
 `;
 
-const Card = styled.div`
-  background: rgba(255, 255, 255, 0.8);
-  padding: 40px;
-  border-radius: 20px;
-  border: 2px solid #add8e6;
-  width: 80%;
-  max-width: 600px;
-  position: relative;
+const TitleBar = styled.div`
+  background: white;
+  width: 90%;
+  max-width: 750px;
+  height: 45px;
+  border-radius: 25px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  position: absolute;
+  top: 25px;
 `;
 
 const BottleImage = styled.img`
-  width: 150px;
-  cursor: pointer;
-  transition: transform 0.3s;
+  width: 220px;
+  cursor: ${(props) => (props.isStep1 ? 'pointer' : 'default')};
+  transition: transform 0.2s;
   &:hover {
-    transform: scale(1.1);
+    transform: ${(props) => (props.isStep1 ? 'scale(1.05)' : 'none')};
   }
 `;
 
-const InputField = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+const ActionText = styled.p`
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #78909c;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  resize: none;
+const PaperContent = styled.div`
+  background-color: #fffcf1;
+  width: 70%;
+  height: 330px;
+  margin-top: 60px;
+  border-radius: 5px;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 12px;
+  position: relative;
 `;
 
-const SelectedMusicCard = styled.div`
+const BlueBar = styled.div`
+  background-color: #a2d2ff;
+  width: 90%;
+  height: 38px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  padding: 12px;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 0 15px;
+  text-align: center;
+`;
+
+const WhiteInputBox = styled.div`
+  background-color: white;
+  width: 65%;
+  height: 85px;
   border-radius: 15px;
-  border: 1px solid #add8e6;
-  margin: 10px 0;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
   cursor: pointer;
 `;
 
-const SelectedAlbumArt = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  margin-right: 15px;
+const StyledTextArea = styled.textarea`
+  background-color: transparent;
+  width: 100%;
+  height: auto;
+  max-height: 70px;
+  border: none;
+  padding: 0 15px;
+  resize: none;
+  outline: none;
+  font-size: 0.95rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  line-height: 1.4;
+
+  &::placeholder {
+    color: #333;
+  }
 `;
 
-const SelectedMusicInfo = styled.div`
+const ButtonGroup = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+`;
+
+const ActionButton = styled.button`
+  padding: 8px 25px;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: ${(props) => (props.primary ? '#74b9ff' : '#fff')};
+  color: ${(props) => (props.primary ? '#fff' : '#74b9ff')};
+  border: ${(props) => (props.primary ? 'none' : '2px solid #74b9ff')};
+`;
+
+const SuccessBar = styled.div`
+  background-color: #fff3cd;
+  width: 80%;
+  max-width: 600px;
+  height: 45px;
+  border-radius: 25px;
+  border: 1px solid #ffcc80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 30px 0;
 `;
 
 export default function BottlesPage() {
@@ -115,7 +201,7 @@ export default function BottlesPage() {
     const fetchQuestion = async () => {
       try {
         const storedToken = localStorage.getItem('token');
-        console.log('전송할 토큰:', storedToken); // 토큰이 제대로 찍히는지 확인
+        console.log('전송할 토큰:', storedToken);
 
         if (!storedToken) {
           setQuestion('로그인 정보가 없습니다.');
@@ -125,9 +211,9 @@ export default function BottlesPage() {
         const res = await GettodayQuest(storedToken);
         if (res.data) {
           setQuestion(res.data.questionText);
-          setQuestionId(res.data.questionId); // 여기서 1이 제대로 들어가는지 확인
+          setQuestionId(res.data.questionId);
         }
-        console.log('서버 전체 응답:', res); // 여기서 데이터 구조 확인
+        console.log('서버 전체 응답:', res);
 
         const questData = res.data;
 
@@ -145,7 +231,6 @@ export default function BottlesPage() {
     fetchQuestion();
   }, []);
 
-  // 2. 유리병 전송 함수
   const handleSend = async (isPublic) => {
     if (!selectedMusic) {
       alert('음악을 선택해주세요!');
@@ -168,214 +253,143 @@ export default function BottlesPage() {
         isShared: isPublic,
       };
 
-      console.log('전송할 데이터:', bottleData); // 전송 전 데이터 확인
+      console.log('전송할 데이터:', bottleData);
 
-      // 1. 유리병 전송 API 호출
-      await SendBottle(token, bottleData);
-
-      // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옵니다.
-      // 이 작업이 수행되어야 musicCalendar에 방금 보낸 병이 추가됩니다.
+      // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옴
+      // musicCalendar에 방금 보낸 병 추가하는 작업
       if (typeof fetchProfileData === 'function') {
         await fetchProfileData();
       }
       setStep(isPublic ? 3 : 4);
     } catch (error) {
       console.error('전송 에러 상세:', error.response);
-      alert('전송에 실패했습니다. 다시 시도해주세요.');
+      alert('오늘 이미 유리병을 작성했습니다.');
+      navigate('/island');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <h1 style={{ fontSize: '2rem', marginBottom: '20px', color: '#333' }}>
-        MUTLE
-      </h1>
-
-      <Card>
+    <PageWrapper>
+      <Header />
+      <LoginCard>
         {step === 1 && (
           <>
-            <h2 style={{ fontSize: '1.2rem', marginBottom: '30px' }}>
-              오늘의 유리병 보내기
-            </h2>
+            <TitleBar>오늘의 유리병 보내기</TitleBar>
             <div onClick={() => setStep(2)} style={{ cursor: 'pointer' }}>
-              <BottleImage src={BottleImg} alt='유리병' />
+              <BottleImage src={BottleImg} alt='유리병' isStep1={true} />
             </div>
-            <p style={{ marginTop: '10px', color: '#888' }}>
-              유리병 클릭하여 작성
-            </p>
+
+            <ActionText> 유리병 클릭하여 작성</ActionText>
+
+            <Link
+              to='/random'
+              style={{
+                position: 'absolute',
+                bottom: '40px',
+                color: '#555',
+                textDecoration: 'underline',
+                fontSize: '0.9rem',
+              }}
+            >
+              나중에 작성하기
+            </Link>
           </>
         )}
 
         {step === 2 && (
           <>
-            <h2 style={{ fontSize: '1.2rem', marginBottom: '20px' }}>
-              오늘의 유리병 보내기
-            </h2>
-            <p style={{ marginBottom: '20px', fontWeight: 'bold' }}>
-              {question}
-            </p>
-            {selectedMusic ? (
-              <SelectedMusicCard onClick={() => navigate('/search-music')}>
-                <SelectedAlbumArt
-                  src={selectedMusic.artworkUrl60}
-                  alt='album'
+            <TitleBar>오늘의 유리병 작성하기</TitleBar>
+            <PaperContent>
+              <BlueBar>Q. {question}</BlueBar>
+              <WhiteInputBox onClick={() => navigate('/search-music')}>
+                {selectedMusic ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '25px',
+                      padding: '0 15px',
+                      width: '100%',
+                    }}
+                  >
+                    <img
+                      src={selectedMusic.artworkUrl60}
+                      alt='album'
+                      style={{
+                        width: '50px',
+                        height: '50px',
+                        borderRadius: '8px',
+                        border: '1px solid #eee',
+                        flexShrink: 0,
+                      }}
+                    />
+                    <div
+                      style={{
+                        color: '#333',
+                        textAlign: 'left',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <strong style={{ display: 'block', fontSize: '0.95rem' }}>
+                        {selectedMusic.trackName}
+                      </strong>
+                      <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                        {' '}
+                        {selectedMusic.artistName}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  '클릭하여 음악 선택'
+                )}
+              </WhiteInputBox>
+
+              <BlueBar>이 노래를 추천하는 이유!</BlueBar>
+              <WhiteInputBox as='label'>
+                <StyledTextArea
+                  placeholder='클릭하여 메모 입력'
+                  value={memo}
+                  onChange={(e) => setMemo(e.target.value)}
                 />
-                <SelectedMusicInfo>
-                  <strong style={{ fontSize: '0.9rem' }}>
-                    {selectedMusic.trackName}
-                  </strong>
-                  <span style={{ fontSize: '0.8rem', color: '#666' }}>
-                    {selectedMusic.artistName}
-                  </span>
-                </SelectedMusicInfo>
-              </SelectedMusicCard>
-            ) : (
-              <div
-                onClick={() => navigate('/search-music')}
-                style={{
-                  width: '100%',
-                  padding: '15px',
-                  margin: '10px 0',
-                  borderRadius: '15px',
-                  border: '1px solid #ccc',
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  color: '#aaa',
-                  boxSizing: 'border-box',
-                }}
-              >
-                클릭하여 음악 선택
-              </div>
-            )}
-            <TextArea
-              placeholder='클릭하여 메모 입력'
-              value={memo}
-              onChange={(e) => setMemo(e.target.value)}
-            />
-            <div
-              style={{
-                marginTop: '20px',
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '10px',
-              }}
-            >
-              <button
-                onClick={() => handleSend(true)}
-                disabled={loading}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#e02727',
-                  border: 'none',
-                  borderRadius: '20px',
-                  color: 'white',
-                  cursor: 'pointer',
-                }}
-              >
+              </WhiteInputBox>
+            </PaperContent>
+
+            <ButtonGroup>
+              <ActionButton primary onClick={() => handleSend(true)}>
                 {loading ? '전송 중...' : '보내기'}
-              </button>
-              <button
-                onClick={() => setStep(4)}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#fff',
-                  border: '1px solid #A2D2FF',
-                  borderRadius: '20px',
-                }}
-              >
+              </ActionButton>
+              <ActionButton onClick={() => handleSend(false)}>
                 나만 보기
-              </button>
-            </div>
+              </ActionButton>
+            </ButtonGroup>
           </>
         )}
 
         {step === 3 && (
           <>
             <BottleImage src={BottleImg} alt='유리병' />
-            <div
-              style={{
-                backgroundColor: '#FFEBCD',
-                padding: '10px 20px',
-                borderRadius: '20px',
-                margin: '20px 0',
-              }}
-            >
-              유리병을 성공적으로 전송했어요!
-            </div>
-            <button
-              onClick={() => navigate('/Me')}
-              style={{
-                backgroundColor: '#A2D2FF',
-                color: 'white',
-                border: 'none',
-                padding: '10px 30px',
-                borderRadius: '20px',
-              }}
-            >
-              홈으로 이동하기
-            </button>
-            <button
-              onClick={() => navigate('/random')}
-              style={{
-                backgroundColor: '#A2D2FF',
-                color: 'white',
-                border: 'none',
-                padding: '10px 30px',
-                borderRadius: '20px',
-              }}
-            >
+            <SuccessBar>유리병을 성공적으로 전송했어요!</SuccessBar>
+            <ActionButton onClick={() => navigate('/random')}>
               유리병 받기!
-            </button>
+            </ActionButton>
           </>
         )}
 
         {step === 4 && (
           <>
             <BottleImage src={BottleImg} alt='유리병' />
-            <div
-              style={{
-                backgroundColor: '#FFEBCD',
-                padding: '10px 20px',
-                borderRadius: '20px',
-                margin: '20px 0',
-              }}
-            >
-              유리병이 성공적으로 저장되었어요!
-            </div>
-            <button
-              onClick={() => navigate('/Me')}
-              style={{
-                backgroundColor: '#A2D2FF',
-                color: 'white',
-                border: 'none',
-                padding: '10px 30px',
-                borderRadius: '20px',
-                cursor: 'pointer',
-              }}
-            >
+            <SuccessBar>유리병이 성공적으로 저장되었어요!</SuccessBar>
+            <ActionButton onClick={() => navigate('/island')}>
               홈으로 이동
-            </button>
+            </ActionButton>
           </>
         )}
-      </Card>
-
-      {step === 1 && (
-        <p style={{ marginTop: '30px' }}>
-          <Link
-            to='/Me'
-            style={{
-              color: '#555',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-            }}
-          >
-            나중에 작성하기
-          </Link>
-        </p>
-      )}
-    </Container>
+      </LoginCard>
+    </PageWrapper>
   );
 }

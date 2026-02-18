@@ -21,11 +21,12 @@ const KakaoCallback = () => {
       const res = await KakaoLogin(code);
 
       if (res && res.status === 'success') {
-        const { accessToken, refreshToken } = res.data;
+        const { accessToken, refreshToken, userId } = res.data;
 
         if (accessToken) {
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('userId', userId);
 
           // 알림창을 띄우기 전에 이미 저장되었는지 확인
           alert(`반갑습니다! 로그인에 성공했습니다.`);
