@@ -284,7 +284,7 @@ export default function BottlesPage() {
             <ActionText> 유리병 클릭하여 작성</ActionText>
 
             <Link
-              to='/island'
+              to='/random'
               style={{
                 position: 'absolute',
                 bottom: '40px',
