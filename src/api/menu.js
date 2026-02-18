@@ -4,7 +4,7 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 
 export const GetMenuInfo = async (token) => {
   try {
-    const response = await axios.get('/api/manu', {
+    const response = await axios.get(`${API_BASE_URL}/api/manu`, {
       Headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

@@ -12,11 +12,15 @@ export const UploadImage = async (file) => {
     formData.append('file', file);
 
     // POST 요청 전송
-    const response = await api.post('/api/image/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await api.post(
+      `${API_BASE_URL}/api/image/upload`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    });
+    );
     // API 응답 구조가 { "data": "이미지URL" } 형태라고 가정 => 이건 더 찾아보기
     return response.data;
   } catch (error) {

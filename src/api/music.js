@@ -4,7 +4,7 @@ const API_BASE_URL = 'https://mutle-be.onrender.com';
 
 export const SearchMusic = async (keyword) => {
   try {
-    const response = await axios.get('/api/music/search', {
+    const response = await axios.get(`${API_BASE_URL}/api/music/search`, {
       params: {
         keyword: keyword,
       },
