@@ -62,11 +62,13 @@ const GoogleButton = styled(BaseButton)`
   flex: 1;
 `;
 
-const KakaoButton = styled(BaseButton)`
-  background-color: #fee500;
-  color: #3c1e1e;
-  flex: 1;
-`;
+const KakaoLoginButton = () => {
+  return (
+    <a href={KAKAO_AUTH_URL} style={{ display: 'inline-block' }}>
+      <img src='/kakao_login_medium_narrow.png' alt='카카오 로그인' />
+    </a>
+  );
+};
 
 const MainLoginButton = styled.button`
   border: none;
@@ -131,9 +133,9 @@ export default function OnboardingPage() {
           <GoogleButton onClick={handleGoogleLogin}>
             Google로 로그인
           </GoogleButton>
-          <KakaoButton onClick={handleKakaoLogin}>
+          <KakaoLoginButton onClick={handleKakaoLogin}>
             카카오톡으로 로그인
-          </KakaoButton>
+          </KakaoLoginButton>
         </SocialButtons>
 
         <MainLoginButton onClick={() => navigate('/login')}>

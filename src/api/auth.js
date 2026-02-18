@@ -161,7 +161,7 @@ export const CheckIdDuplicate = async (userId) => {
 //이메일 중복 확인
 export const CheckEmailDuplicate = async (email) => {
   try {
-    const response = await api.get(`${API_BASE_URL}/api/auth/check-email`, {
+    const response = await axios.get(`${API_BASE_URL}/api/auth/check-email`, {
       params: {
         email: email,
       },
