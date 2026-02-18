@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Button from '../Button/Button';
+
 const PLATFORM_OPTIONS = [
   'SPOTIFY',
   'APPLE MUSIC',
@@ -172,15 +174,22 @@ export default function MusicCard({
           />
 
           <div style={styles.actionButtons}>
-            <button onClick={onConfirm} style={styles.confirmBtn}>
+            <Button
+              variant='primary'
+              size='md'
+              onClick={onConfirm}
+              style={{ flex: 1 }} // 버튼이 공간을 꽉 채우도록 설정
+            >
               {platforms && platforms.length > 0 ? '수정 완료' : '추가'}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant='login_2' // 정의하신 회색 스타일 활용
+              size='md'
               onClick={() => setShowPlatformInput(false)}
-              style={styles.cancelBtn}
+              style={{ flex: 1 }}
             >
               취소
-            </button>
+            </Button>
           </div>
         </div>
       )}
