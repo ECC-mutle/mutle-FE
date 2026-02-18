@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '',
+  baseURL: 'https://mutle-be.onrender.com',
 });
 
 const API_BASE_URL = 'https://mutle-be.onrender.com';
