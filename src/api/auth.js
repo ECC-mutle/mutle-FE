@@ -176,7 +176,7 @@ export const CheckEmailDuplicate = async (email) => {
 //카카오 가입/로그인
 export const KakaoLogin = async (code) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/auth/kakao`, {
+    const response = await axios.post('https://mutle-be.onrender.com/api/auth/kakao', {
       code: code,
     });
     return response.data;
@@ -189,7 +189,7 @@ export const KakaoLogin = async (code) => {
 //구글 가입/로그인
 export const GoogleLogin = async (authcode) => {
   try {
-    const response = await axios.post('/api/auth/google', {
+    const response = await axios.post('https://mutle-be.onrender.com/api/auth/google', {
       code: authcode,
     });
     return response.data;
