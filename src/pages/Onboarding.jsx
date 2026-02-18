@@ -103,9 +103,10 @@ const SignupText = styled.p`
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
+  const BASE_URL = window.location.origin;
 
   const REST_API_KEY = '0d0a97f9482a11a9b73fedadd89ae9ff';
-  const REDIRECT_URI = 'http://localhost:3000/kakao-callback'; // App.jsx에 설정한 경로
+  const REDIRECT_URI = `${BASE_URL}/kakao-callback`; // App.jsx에 설정한 경로
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   const handleKakaoLogin = () => {
@@ -114,7 +115,7 @@ export default function OnboardingPage() {
 
   const GOOGLE_CLIENT_ID =
     '923537062848-7cuupfs6nseihkq5q7t095nblvq6e8lc.apps.googleusercontent.com';
-  const GOOGLE_REDIRECT_URI = 'http://localhost:3000/google-callback';
+  const GOOGLE_REDIRECT_URI = `${BASE_URL}/google-callback`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email profile`;
 
   const handleGoogleLogin = () => {
