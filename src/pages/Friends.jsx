@@ -89,7 +89,7 @@ export default function Friends() {
             flexShrink: 0,
           }}
         >
-          <MenuCard />
+          <MenuCard requestCount={requestCount} />
         </div>
       </div>
     </div>

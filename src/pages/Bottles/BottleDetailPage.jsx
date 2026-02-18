@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GetBottleDetail } from '../../api/bottles';
+import Header from '../../components/Header/Header';
 import BottleImg from '../../assets/images/유리병_png.png';
 
 export default function BottleDetailPage() {
@@ -38,30 +39,67 @@ export default function BottleDetailPage() {
   }
 
   return (
-    <Container>
-      <Title>MUTLE</Title>
+    <PageWrapper>
+      <Header />
+      <LoginCard>
+        <PaperContent>
+          <BlueBar>Q. {bottle.questionText}</BlueBar>
+          <WhiteInputBox>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '25px',
+                padding: '0 15px',
+                width: '100%',
+              }}
+            >
+              <img
+                src={bottle.musicInfo.artworkUrl60}
+                alt='album'
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '8px',
+                  border: '1px solid #eee',
+                  flexShrink: 0,
+                }}
+              />
+              <div
+                style={{
+                  color: '#333',
+                  textAlign: 'left',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <strong style={{ display: 'block', fontSize: '0.95rem' }}>
+                  {bottle.musicInfo.trackName}
+                </strong>
+                <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                  {bottle.musicInfo.artistName}
+                </span>
+              </div>
+            </div>
+          </WhiteInputBox>
 
-      <Card>
-        <BottleIcon src={BottleImg} alt='유리병' />
+          <BlueBar>
+            {bottle.sender?.senderNickname || '익명'} 님의 한마디
+          </BlueBar>
 
-        <SectionTitle>오늘의 질문</SectionTitle>
-        <QuestionText>{bottle.questionText}</QuestionText>
+          <WhiteInputBox as='label'>
+            <p>{bottle.memo || '작성된 메모가 없습니다.'}</p>
+            <HeartBadge>❤️ {bottle.totalCount || 0}</HeartBadge>
+          </WhiteInputBox>
+        </PaperContent>
 
-        <SectionTitle>선택한 음악</SectionTitle>
-        <MusicCard>
-          <AlbumArt src={bottle.musicInfo.artworkUrl60} alt='앨범 커버' />
-          <MusicInfo>
-            <TrackName>{bottle.musicInfo.trackName}</TrackName>
-            <ArtistName>{bottle.musicInfo.artistName}</ArtistName>
-          </MusicInfo>
-        </MusicCard>
-
-        <SectionTitle>남긴 메모</SectionTitle>
-        <MemoBox>{bottle.memo || '작성된 메모가 없습니다.'}</MemoBox>
-
-        <BackButton onClick={() => navigate('/island')}>뒤로가기</BackButton>
-      </Card>
-    </Container>
+        <ButtonGroup>
+          <ActionButton onClick={() => navigate(-1)}>뒤로가기</ActionButton>
+        </ButtonGroup>
+      </LoginCard>
+    </PageWrapper>
   );
 }
 
@@ -194,3 +232,134 @@ export const StatusText = styled.p`
   color: #666;
   font-size: 1.1rem;
 `;
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+`;
+
+const LoginCard = styled.div`
+  width: 90%;
+  max-width: 900px;
+  height: 550px;
+  background-color: rgba(178, 235, 242, 0.7);
+  border-radius: 30px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: 20px;
+`;
+
+const TitleBar = styled.div`
+  background: white;
+  width: 90%;
+  max-width: 750px;
+  height: 45px;
+  border-radius: 25px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+  position: absolute;
+  top: 25px;
+`;
+
+const HeartBadge = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ff4757;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  z-index: 10;
+`;
+
+const PaperContent = styled.div`
+  background-color: #fffcf1;
+  width: 70%;
+  height: 330px;
+  margin-top: 60px;
+  border-radius: 5px;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 12px;
+  position: relative;
+`;
+
+const BlueBar = styled.div`
+  background-color: #a2d2ff;
+  width: 75%;
+  height: 38px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 0 15px;
+  text-align: center;
+`;
+
+const WhiteInputBox = styled.div`
+  background-color: white;
+  width: 65%;
+  height: 85px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+`;
+
+const ActionButton = styled.button`
+  padding: 8px 25px;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: ${(props) => (props.primary ? '#74b9ff' : '#fff')};
+  color: ${(props) => (props.primary ? '#fff' : '#74b9ff')};
+  border: ${(props) => (props.primary ? 'none' : '2px solid #74b9ff')};
+`;
+
+const styles = {
+  LoginCard: {
+    width: '100%',
+    maxWidth: '500px',
+    margin: '0 auto',
+    background: '#e0f2f1',
+    height: '100vh',
+    padding: '20px',
+    boxSizing: 'border-box',
+  },
+};

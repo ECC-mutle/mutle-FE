@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { UpdateBio } from '../../api/island';
 import defaultProfile from '../../assets/images/defaultProfile.png';
+import Button from '../../components/Button/Button';
 
 const styles = {
   card: {
@@ -43,7 +44,7 @@ const styles = {
   },
 };
 
-export default function ProfileCard({ profile, setProfile }) {
+export default function ProfileCard({ profile, setProfile, isEditable }) {
   const bioDefaultText = '아직 소개가 없어요';
   const bio = profile?.bio ?? bioDefaultText;
   const nickname = profile?.nickname || '이름 없음';
@@ -94,7 +95,7 @@ export default function ProfileCard({ profile, setProfile }) {
       <div style={styles.infoContainer}>
         <div style={styles.nickname}>{nickname}</div>
         {/* Bio 영역 */}
-        {isEditing ? (
+        {isEditing && isEditable ? (
           <>
             <textarea
               value={inputBio}
@@ -102,13 +103,25 @@ export default function ProfileCard({ profile, setProfile }) {
               rows={3}
               style={{ width: '100%' }}
             />
-            <button onClick={handleSave}>저장</button>
-            <button onClick={() => setIsEditing(false)}>취소</button>
+            <Button variant='yes' size='sm' onClick={handleSave}>
+              저장
+            </Button>
+            <Button variant='no' size='sm' onClick={() => setIsEditing(false)}>
+              취소
+            </Button>
           </>
         ) : (
           <>
             <p style={styles.bio}>{bio}</p>
-            <button onClick={() => setIsEditing(true)}>수정</button>
+            {isEditable && (
+              <Button
+                variant='primary'
+                size='md'
+                onClick={() => setIsEditing(true)}
+              >
+                수정
+              </Button>
+            )}
           </>
         )}
       </div>
