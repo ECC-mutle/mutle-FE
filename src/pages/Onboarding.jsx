@@ -62,17 +62,6 @@ const GoogleButton = styled(BaseButton)`
   flex: 1;
 `;
 
-const KakaoLoginButton = () => {
-  const REST_API_KEY = '0d0a97f9482a11a9b73fedadd89ae9ff';
-  const REDIRECT_URI = `${BASE_URL}/kakao-callback`; // App.jsx에 설정한 경로
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
-  return (
-    <a href={KAKAO_AUTH_URL} style={{ display: 'inline-block' }}>
-      <img src='/kakao_login_medium_narrow.png' alt='카카오 로그인' />
-    </a>
-  );
-};
-
 const MainLoginButton = styled.button`
   border: none;
   border-radius: 35px;
@@ -111,7 +100,7 @@ export default function OnboardingPage() {
   const BASE_URL = window.location.origin;
 
   const REST_API_KEY = '0d0a97f9482a11a9b73fedadd89ae9ff';
-  const REDIRECT_URI = `${BASE_URL}/kakao-callback`; // App.jsx에 설정한 경로
+  const REDIRECT_URI = `https://mutle-fe.vercel.app/kakao-callback`; // App.jsx에 설정한 경로
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   const handleKakaoLogin = () => {
@@ -120,8 +109,16 @@ export default function OnboardingPage() {
 
   const GOOGLE_CLIENT_ID =
     '923537062848-7cuupfs6nseihkq5q7t095nblvq6e8lc.apps.googleusercontent.com';
-  const GOOGLE_REDIRECT_URI = `${BASE_URL}/google-callback`;
+  const GOOGLE_REDIRECT_URI = `https://mutle-fe.vercel.app/google-callback`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email profile`;
+
+  const KakaoLoginButton = () => {
+    return (
+      <a href={KAKAO_AUTH_URL} style={{ display: 'inline-block' }}>
+        <img src='/kakao_login_medium_narrow.png' alt='카카오 로그인' />
+      </a>
+    );
+  };
 
   const handleGoogleLogin = () => {
     window.location.href = GOOGLE_AUTH_URL;

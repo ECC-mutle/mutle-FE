@@ -17,7 +17,6 @@ export default defineConfig({
         target: 'https://mutle-be.onrender.com',
         changeOrigin: true,
         secure: false,
-        //rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },
