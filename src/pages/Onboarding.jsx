@@ -63,6 +63,9 @@ const GoogleButton = styled(BaseButton)`
 `;
 
 const KakaoLoginButton = () => {
+  const REST_API_KEY = '0d0a97f9482a11a9b73fedadd89ae9ff';
+  const REDIRECT_URI = `${BASE_URL}/kakao-callback`; // App.jsx에 설정한 경로
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
   return (
     <a href={KAKAO_AUTH_URL} style={{ display: 'inline-block' }}>
       <img src='/kakao_login_medium_narrow.png' alt='카카오 로그인' />
