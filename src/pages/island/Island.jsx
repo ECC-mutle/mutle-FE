@@ -187,6 +187,7 @@ export default function Island() {
               // 자식에게 부모의 로직(함수)을 통째로 넘깁니다.
               handleAddPlatform={handleAddPlatform}
               onAddPlatform={isMyIsland ? handleAddPlatform : null}
+              isEditable={isMyIsland}
             />
           </div>
 

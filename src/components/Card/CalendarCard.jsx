@@ -147,9 +147,9 @@ const styles = {
     padding: '20px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
     width: '100%',
-    maxWidth: '1470px',
+    maxWidth: '1400px',
     maxHeight: '500px',
-    margin: '0',
+    margin: '20px auto',
   },
   header: {
     display: 'flex',

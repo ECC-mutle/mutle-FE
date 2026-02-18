@@ -22,7 +22,12 @@ const PLATFORM_LOGOS = {
   SOUNDCLOUD: soundcloudLogo,
 };
 
-export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
+export default function MusicCard({
+  repMusic,
+  platforms,
+  handleAddPlatform,
+  isEditable,
+}) {
   // repMusic: { trackName, artistName, artworkUrl60 } 또는 null
   const trackName = repMusic?.trackName || '곡 없음';
   const artistName = repMusic?.artistName || '아티스트 없음';
@@ -74,18 +79,23 @@ export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
           </div>
         </div>
       </div>
-
-      <button
-        onClick={() => navigate('/search-music-island')}
-        style={styles.editMusicBtn}
-      >
-        🔍 음악 수정
-      </button>
+      {isEditable && (
+        <button
+          onClick={() => navigate('/search-music-island')}
+          style={styles.editMusicBtn}
+        >
+          🔍 음악 수정
+        </button>
+      )}
 
       {/* 🔗 플랫폼 버튼 영역 - 로고 강조형 */}
       <div style={styles.buttonGroup}>
         {platforms && platforms.length > 0 ? (
-          <button style={styles.platformButton} onClick={handleEditClick}>
+          <button
+            style={styles.platformButton}
+            onClick={isEditable ? handleEditClick : undefined}
+            disabled={!isEditable}
+          >
             <div style={styles.platformContent}>
               <img
                 src={getPlatformIcon(platforms[0].platformName)}
@@ -98,19 +108,21 @@ export default function MusicCard({ repMusic, platforms, handleAddPlatform }) {
             </div>
           </button>
         ) : (
-          <div
-            style={styles.emptyCard}
-            onClick={() => setShowPlatformInput(true)}
-          >
-            <p style={{ color: '#888' }}>
-              아직 아무것도 없어요 (클릭해서 추가)
-            </p>
-          </div>
+          isEditable && (
+            <div
+              style={styles.emptyCard}
+              onClick={() => setShowPlatformInput(true)}
+            >
+              <p style={{ color: '#888' }}>
+                아직 아무것도 없어요 (클릭해서 추가)
+              </p>
+            </div>
+          )
         )}
       </div>
 
       {/* 입력창 영역 - 선택 버튼들도 로고 위주로 */}
-      {showPlatformInput && (
+      {isEditable && showPlatformInput && (
         <div style={styles.inputBox}>
           <p
             style={{

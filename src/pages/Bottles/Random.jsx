@@ -205,8 +205,10 @@ export default function RandomPage() {
     try {
       await AddBookmark(token, bottle.bottleId);
       alert('유리병을 보관함에 저장했어요! ✨');
+      navigate('/island');
     } catch (error) {
       alert('저장에 실패했거나 이미 저장된 유리병입니다.');
+      navigate('/island');
     }
   };
 
@@ -284,7 +286,7 @@ export default function RandomPage() {
             </PaperContent>
 
             <ButtonGroup>
-              <ActionButton onClick={() => navigate('/Me')}>
+              <ActionButton onClick={() => navigate('/island')}>
                 넘어가기
               </ActionButton>
               <ActionButton primary onClick={handleSave}>

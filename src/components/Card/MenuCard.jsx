@@ -1,8 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 
-export default function MenuCard() {
+export default function MenuCard({ requestCount }) {
   const navigate = useNavigate();
-
+  const styles = {
+    badge: {
+      backgroundColor: '#FF6B6B',
+      color: 'white',
+      borderRadius: '50%',
+      width: '20px',
+      height: '20px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+  };
   return (
     <div
       style={{
@@ -75,6 +89,7 @@ export default function MenuCard() {
           }}
         >
           <span>≡ 친구 관리</span>
+          {requestCount > 0 && <span style={styles.badge}>{requestCount}</span>}
         </button>
       </div>
     </div>
