@@ -255,6 +255,9 @@ export default function BottlesPage() {
 
       console.log('전송할 데이터:', bottleData);
 
+      const res = await SendBottle(token, bottleData);
+      console.log('전송 성공 응답:', res);
+
       // 2. 전송 성공 직후, 서버에서 최신 프로필/캘린더 정보를 다시 가져옴
       // musicCalendar에 방금 보낸 병 추가하는 작업
       if (typeof fetchProfileData === 'function') {
