@@ -4,6 +4,8 @@ const api = axios.create({
   baseURL: '',
 });
 
+const API_BASE_URL = 'https://mutle-be.onrender.com';
+
 export const UploadImage = async (file) => {
   try {
     // FormData 객체 생성
