@@ -103,10 +103,9 @@ const SignupText = styled.p`
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
-  const BASE_URL = window.location.origin;
 
   const REST_API_KEY = '0d0a97f9482a11a9b73fedadd89ae9ff';
-  const REDIRECT_URI = `https://mutle-fe.vercel.app/kakao-callback`; // App.jsx에 설정한 경로
+  const REDIRECT_URI = `https://mutle-fe.vercel.app/kakao-callback`;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   const handleKakaoLogin = () => {
