@@ -20,7 +20,7 @@ export const GetProfile = async (userId, token, year, month) => {
 export const UpdateBio = async (bio, token) => {
   try {
     const response = await axios.put(
-      '/api/island/bio',
+      `${API_BASE_URL}/api/island/bio`,
       {
         bio: bio,
       },
@@ -57,11 +57,14 @@ export const UpdateRepMusic = async (musicData, token) => {
 //대표곡 삭제
 export const DeleteRepMusic = async (token) => {
   try {
-    const response = await axios.delete('/api/island/rep-music', {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/island/rep-music`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('대표곡 삭제 에러:', error);
@@ -73,7 +76,7 @@ export const DeleteRepMusic = async (token) => {
 export const UpdatePlatform = async (platformsArray, token) => {
   try {
     const response = await axios.put(
-      '/api/island/platforms',
+      `${API_BASE_URL}/api/island/platforms`,
       { platforms: platformsArray },
       {
         headers: {

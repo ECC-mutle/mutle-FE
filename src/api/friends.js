@@ -41,9 +41,12 @@ export const RequestFriend = async (token, targetId) => {
 //@param {number} requestId - 취소할 요청의 ID
 export const CancelFriendRequest = async (token, requestId) => {
   try {
-    const response = await axios.delete(`/api/friends/requests/${requestId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/friends/requests/${requestId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     return response.data;
   } catch (error) {
     console.error('친구 신청 취소 실패', error);
@@ -54,9 +57,12 @@ export const CancelFriendRequest = async (token, requestId) => {
 //받은 친구 신청 목록 조회
 export const GetRecivedRequests = async (token) => {
   try {
-    const response = await axios.get('/api/friends/requests/received', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}/api/friends/requests/received`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     return response.data;
   } catch (error) {
     console.error('받은 신구 신청 목록 조회 실패 ', error);
@@ -70,7 +76,7 @@ export const GetRecivedRequests = async (token) => {
 export const HandleFriendRequest = async (token, requestId, status) => {
   try {
     const response = await axios.patch(
-      `/api/friends/requests/${requestId}`,
+      `${API_BASE_URL}/api/friends/requests/${requestId}`,
       { friendshipStatus: status },
       { headers: { Authorization: `Bearer ${token}` } },
     );
