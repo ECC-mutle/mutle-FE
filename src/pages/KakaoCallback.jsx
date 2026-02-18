@@ -20,8 +20,10 @@ const KakaoCallback = () => {
     try {
       const res = await KakaoLogin(code);
 
-      if (res && res.status === 'success') {
-        const { accessToken, refreshToken, userId } = res.data;
+      console.log('카카오 응답:', res);
+
+      if (res.data?.status === 'success') {
+        const { accessToken, refreshToken, userId, isNewUser } = res.data.data;
 
         if (accessToken) {
           localStorage.setItem('accessToken', accessToken);
