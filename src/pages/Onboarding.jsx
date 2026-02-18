@@ -62,6 +62,12 @@ const GoogleButton = styled(BaseButton)`
   flex: 1;
 `;
 
+const KakaoButton = styled(BaseButton)`
+  background-color: #fee500;
+  color: #3c1e1e;
+  flex: 1;
+`;
+
 const MainLoginButton = styled.button`
   border: none;
   border-radius: 35px;
@@ -112,14 +118,6 @@ export default function OnboardingPage() {
   const GOOGLE_REDIRECT_URI = `https://mutle-fe.vercel.app/google-callback`;
   const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email profile`;
 
-  const KakaoLoginButton = () => {
-    return (
-      <a href={KAKAO_AUTH_URL} style={{ display: 'inline-block' }}>
-        <img src='/kakao_login_medium_narrow.png' alt='카카오 로그인' />
-      </a>
-    );
-  };
-
   const handleGoogleLogin = () => {
     window.location.href = GOOGLE_AUTH_URL;
   };
@@ -133,9 +131,9 @@ export default function OnboardingPage() {
           <GoogleButton onClick={handleGoogleLogin}>
             Google로 로그인
           </GoogleButton>
-          <KakaoLoginButton onClick={handleKakaoLogin}>
+          <KakaoButton onClick={handleKakaoLogin}>
             카카오톡으로 로그인
-          </KakaoLoginButton>
+          </KakaoButton>
         </SocialButtons>
 
         <MainLoginButton onClick={() => navigate('/login')}>
