@@ -23,7 +23,7 @@ const KakaoCallback = () => {
       console.log('카카오 응답:', res);
 
       if (res.data?.status === 'success') {
-        const { accessToken, refreshToken, userId, isNewUser } = res.data.data;
+        const { accessToken, refreshToken, userId, newUser } = res.data.data;
 
         if (accessToken) {
           localStorage.setItem('accessToken', accessToken);
