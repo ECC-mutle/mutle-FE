@@ -30,7 +30,7 @@ export default function CalendarCard({ calendarData = [], isClickable }) {
     console.log('부모가 준 원본 배열:', calendarData);
     const mapped = {};
     calendarData.forEach((item) => {
-      const dateKey = item.date.split('T')[0];
+      const dateKey = item.date.split('T')[0].trim();
       mapped[dateKey] = {
         bottleId: item.bottleId,
         artworkUrl60: item.artworkUrl60,
@@ -100,12 +100,20 @@ export default function CalendarCard({ calendarData = [], isClickable }) {
           const dateKey = day
             ? `2026-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
             : null;
+
+          if (day === 17 || day === 19) {
+            console.log(`체크: ${day}일의 dateKey는 ${dateKey} 입니다.`);
+            console.log(`그 키로 찾은 데이터:`, musicData[dateKey]);
+          }
           const bottleInfo = dateKey ? musicData[dateKey] : null;
 
           return (
             <div
               key={index}
-              onClick={() => handleDateClick(day)}
+              onClick={() => {
+                console.log('클릭한 날짜:', day);
+                handleDateClick(day);
+              }}
               style={{
                 ...styles.dayCell,
                 backgroundColor: day
