@@ -34,9 +34,9 @@ export default function ReceivedRequestsCard({ requests, onBack, refresh }) {
         <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>
           받은 친구 신청 목록
         </h2>
-        <SearchButton onClick={onBack} style={{ backgroundColor: '#ccc' }}>
+        <backButtonStyle onClick={onBack} style={{ backgroundColor: '#ccc' }}>
           목록으로 돌아가기
-        </SearchButton>
+        </backButtonStyle>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
