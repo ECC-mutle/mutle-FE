@@ -22,30 +22,27 @@ const KakaoCallback = () => {
 
       console.log('카카오 응답:', res);
 
-      if (res.data?.status === 'success') {
-        const { accessToken, refreshToken, userId, newUser } = res.data.data;
+      // axios 전체 응답인지 아닌지 자동 대응
+      const responseData = res.data ? res.data : res;
 
-        if (accessToken) {
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-          localStorage.setItem('userId', userId);
+      if (responseData.status === 'success') {
+        const { accessToken, refreshToken, userId, newUser } =
+          responseData.data;
 
-          // 알림창을 띄우기 전에 이미 저장되었는지 확인
-          alert(`반갑습니다! 로그인에 성공했습니다.`);
-          navigate('/bottles/bottles', { replace: true });
-        }
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('userId', userId);
+
+        console.log('토큰 저장 완료');
+
+        navigate('/bottles/bottles', { replace: true });
       }
     } catch (error) {
-      // 이미 성공해서 토큰이 있는 상태라면 에러 알림을 무시
-      if (!localStorage.getItem('accessToken')) {
-        console.error('로그인 에러:', error);
-        alert('로그인 처리 중 오류가 발생했습니다.');
-        navigate('/');
-      }
+      console.error('로그인 에러:', error);
+      alert('로그인 처리 중 오류가 발생했습니다.');
+      navigate('/');
     }
   };
-
-  return <div>로그인 중입니다. 잠시만 기다려주세요...</div>;
 };
 
 export default KakaoCallback;
