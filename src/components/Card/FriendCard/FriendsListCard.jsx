@@ -115,7 +115,7 @@ export default function FriendsListCard({ friends, refreshFriends }) {
           friends.map((friend) => (
             <FriendItem
               key={friend.userId}
-              friends={friend}
+              friend={friend}
               onDelete={() => handleDeleteFriend(friend.userId)}
             />
           ))
