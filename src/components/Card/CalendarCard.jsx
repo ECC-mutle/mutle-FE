@@ -58,7 +58,9 @@ export default function CalendarCard({ calendarData = [], isClickable }) {
     // 클릭한 칸의 날짜 키 조립 (ex: 2026-02-15)
     const dateKey = `2026-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const bottleInfo = musicData[dateKey];
-
+    console.log('--- 캘린더 클릭 디버깅 ---');
+    console.log('조립된 날짜 키:', dateKey);
+    console.log('찾은 유리병 정보:', bottleInfo);
     setSelectedDate(day);
 
     if (bottleInfo?.bottleId) {
