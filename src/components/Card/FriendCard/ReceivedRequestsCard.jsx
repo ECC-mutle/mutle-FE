@@ -1,6 +1,16 @@
 import React from 'react';
 import { HandleFriendRequest } from '../../../api/friends';
 import DefaultProfileImg from '../../../assets/images/defaultProfile.png';
+import {
+  Card,
+  Header,
+  SearchRow,
+  Input,
+  SearchButton,
+  BackButton,
+  ResultBox,
+  List,
+} from './FriendCard.style';
 
 export default function ReceivedRequestsCard({ requests, onBack, refresh }) {
   console.log('받은 신청 데이터 원본:', requests);
@@ -21,6 +31,7 @@ export default function ReceivedRequestsCard({ requests, onBack, refresh }) {
           ? '친구 신청이 수락되었습니다.'
           : '신청을 거절했습니다.',
       );
+      await GetFriendList(token);
 
       refresh();
     } catch (error) {
@@ -34,9 +45,9 @@ export default function ReceivedRequestsCard({ requests, onBack, refresh }) {
         <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>
           받은 친구 신청 목록
         </h2>
-        <backButtonStyle onClick={onBack} style={{ backgroundColor: '#ccc' }}>
+        <SearchButton onClick={onBack} style={{ backgroundColor: '#ccc' }}>
           목록으로 돌아가기
-        </backButtonStyle>
+        </SearchButton>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
