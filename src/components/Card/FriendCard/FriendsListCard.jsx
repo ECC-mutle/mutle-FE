@@ -20,8 +20,7 @@ import {
   List,
 } from './FriendCard.style';
 
-export default function FriendsListCard() {
-  const [friends, setFriends] = useState([]);
+export default function FriendsListCard({ friends, refreshFriends }) {
   const [searchuserId, setSearchuserId] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -36,29 +35,11 @@ export default function FriendsListCard() {
     try {
       await DelteFriend(token, friendId);
       alert('친구 삭제가 완료되었습니다.');
-      fetchFriends(); // 목록 새로고침
+      refreshFriends(); // 목록 새로고침
     } catch (e) {
       alert('친구 삭제에 실패했습니다.');
     }
   };
-
-  const fetchFriends = async () => {
-    if (!token) return;
-
-    try {
-      setLoading(true);
-      const res = await GetFriendList(token);
-      setFriends(res.data || []);
-    } catch (e) {
-      console.error('친구 목록 로딩 실패:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFriends();
-  }, [token]);
 
   // 친구 검색
   const handleSearch = async () => {
