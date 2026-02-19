@@ -29,6 +29,8 @@ export default function Friends() {
 
   const fetchFriends = async () => {
     const res = await GetFriendList(token);
+    console.log(res.data);
+
     setFriends(res.data || []);
   };
 
