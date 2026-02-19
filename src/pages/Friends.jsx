@@ -87,6 +87,7 @@ export default function Friends() {
               refresh={() => {
                 fetchRequests();
                 fetchFriends();
+                setShowRequestList(false);
               }}
             />
           ) : (
