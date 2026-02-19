@@ -17,7 +17,7 @@ export default function BottleDetailPage() {
         const token = localStorage.getItem('token');
 
         // 주소창에서 얻은 bottleId를 API에 그대로 전달
-        const res = await GetBottleDetail(token, bottleId);
+        const res = await GetBottleDetail(token, Number(bottleId));
         console.log('API 응답 전체:', res);
         setBottle(res.data);
       } catch (error) {
