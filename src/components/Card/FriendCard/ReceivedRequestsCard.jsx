@@ -31,7 +31,6 @@ export default function ReceivedRequestsCard({ requests, onBack, refresh }) {
           ? '친구 신청이 수락되었습니다.'
           : '신청을 거절했습니다.',
       );
-      await GetFriendList(token);
 
       refresh();
     } catch (error) {
