@@ -24,6 +24,9 @@ export default function BottleDetailPage() {
         console.error('데이터 로드 실패:', error);
 
         navigate(-1);
+        alert(
+          `에러 발생: ${error.response?.data?.message || '데이터를 찾을 수 없습니다.'}`,
+        );
       } finally {
         setLoading(false);
       }

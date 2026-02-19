@@ -130,6 +130,9 @@ export const GetBottleDetail = async (token, bottleId) => {
   try {
     const cleanToken = getCleanToken(token);
 
+    console.log('보내는 토큰 확인:', cleanToken);
+    console.log('요청 URL:', `${API_BASE_URL}/api/bottles/${bottleId}`);
+
     const response = await axios.get(
       `${API_BASE_URL}/api/bottles/${bottleId}`,
       {
@@ -138,7 +141,10 @@ export const GetBottleDetail = async (token, bottleId) => {
     );
     return response.data;
   } catch (error) {
-    console.error('유리병 상세 조회 에러', error);
+    // 🔍 로그 추가: 서버가 정확히 뭐라고 하는지 확인
+    if (error.response) {
+      console.error('서버 에러 상세:', error.response.data);
+    }
     throw error;
   }
 };
