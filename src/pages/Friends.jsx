@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GetRecivedRequests } from '../api/friends';
+import { GetRecivedRequests, GetFriendList } from '../api/friends';
 import Header from '../components/Header/Header';
 import NavigateCard from '../components/Card/NavigateCard';
 import FriendsListCard from '../components/Card/FriendCard/FriendsListCard';
@@ -7,6 +7,7 @@ import MenuCard from '../components/Card/MenuCard';
 import ReceivedRequestsCard from '../components/Card/FriendCard/ReceivedRequestsCard';
 
 export default function Friends() {
+  const [friends, setFriends] = useState([]);
   const [requestCount, setRequestCount] = useState(0);
   const [requests, setRequests] = useState([]); // 신청 목록 데이터 저장
   const [showRequestList, setShowRequestList] = useState(false);
@@ -26,8 +27,14 @@ export default function Friends() {
     }
   };
 
+  const fetchFriends = async () => {
+    const res = await GetFriendList(token);
+    setFriends(res.data || []);
+  };
+
   useEffect(() => {
     fetchRequests();
+    fetchFriends();
   }, []);
 
   return (
@@ -50,7 +57,7 @@ export default function Friends() {
       <div style={{ flexShrink: 0, marginTop: '12px', marginBottom: '12px' }}>
         <NavigateCard
           requestCount={requestCount}
-          onToggleList={() => setShowRequestList(!showRequestList)}
+          onToggleList={() => setShowRequestList((prev) => !prev)}
           isListView={showRequestList}
         />
       </div>
@@ -75,10 +82,13 @@ export default function Friends() {
             <ReceivedRequestsCard
               requests={requests}
               onBack={() => setShowRequestList(false)}
-              refresh={fetchRequests} // 수락/거절 후 목록 갱신용
+              refresh={() => {
+                fetchRequests();
+                fetchFriends();
+              }}
             />
           ) : (
-            <FriendsListCard />
+            <FriendsListCard friends={friends} refreshFriends={fetchFriends} />
           )}
         </div>
 
