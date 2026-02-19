@@ -100,24 +100,23 @@ export default function FriendsListCard({ friends, refreshFriends }) {
       {loading && <p>로딩 중...</p>}
 
       <List>
-        {isSearching && searchResult ? (
-          <>
-            <ResultBox>'{searchuserId}' 의 검색 결과입니다.</ResultBox>
-            {/* 검색된 유저는 친구가 아닐 수 있으므로 NotFriendItem 사용 */}
-            <NotFriendItem friend={searchResult} isSearchResult />
-          </>
+        {isSearching ? (
+          searchResult ? (
+            <>
+              <ResultBox>'{searchuserId}' 의 검색 결과입니다.</ResultBox>
+              <NotFriendItem friend={searchResult} isSearchResult />
+            </>
+          ) : (
+            <p>검색 결과가 없습니다.</p>
+          )
+        ) : friends.length === 0 ? (
+          <p>친구가 없습니다.</p>
         ) : (
-          /* CASE 2: 기존 친구 목록 표시 (검색 중이 아닐 때) */
-          !isSearching &&
           friends.map((friend) => (
             <FriendItem
               key={friend.userId}
               friends={friend}
-              onDelete={() => {
-                console.log('삭제하려는 ID:', friend.userId);
-                handleDeleteFriend(friend.userId);
-              }}
-              // 친구 목록에서는 '방문하기'와 '친구 삭제' 버튼이 모두 필요함
+              onDelete={() => handleDeleteFriend(friend.userId)}
             />
           ))
         )}
